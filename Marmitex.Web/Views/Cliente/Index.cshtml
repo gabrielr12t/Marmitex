@@ -1,0 +1,53 @@
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
+
+ 
+
+
+<script>
+    $(document).ready(function () {
+        $('.celular').mask('(00) 0000-00009');        
+        $('.cep').mask('99999-999');
+        $('.cpf').mask('999.999.999-99');
+
+        $(".celular").blur(function(event){
+            if($(this).val().length == 15){
+                $('.celular').mask('(00) 90000-0009');
+            }else{
+                $('.celular').mask('(00) 0000-00009');
+            }
+        });        
+    });    
+</script>
+
+<div class="container">
+  <h2>Busca de cliente</h2>
+  <form asp-controller="Cliente" asp-action="Index" method="POST">
+    <div class="form-group">
+      <label>Telefone/Celular:</label>
+      <input class="form-control celular" name="telefone" placeholder="Entre com o telefone ou celular">
+      <span class="text-danger"></span>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+      </div>
+      <div class="col-lg-6">
+        <a href="/Cliente/Registro" class="pull-rigth">Registrar cliente</a>
+      </div>
+    </div>    
+  </form>    
+</div>
+<br>
+<div class="container">
+  @if (ViewBag.Message != null)
+  {
+    <div class="alert alert-warning alert-dismissible fade show">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Erro!</strong> @ViewBag.Message
+    </div>
+  }   
+</div>

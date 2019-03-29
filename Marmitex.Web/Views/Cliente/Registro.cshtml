@@ -1,0 +1,68 @@
+
+@model Marmitex.Web.ViewModels.ClienteViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+ 
+
+<div class="container">
+  <h2>Registro de cliente</h2><a href="/Cliente/Listar">Lista de clientes</a><br/>
+  <form asp-controller="Cliente" asp-action="Registro"  >
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" >
+    <div class="form-group">
+      <label>Nome:</label>
+      <input class="form-control" asp-for="Nome" placeholder="Nome">
+      <span class="text-danger" asp-validation-for="Nome"></span>
+    </div>
+    <div class="form-group">
+      <label>Sobrenome:</label>
+      <input class="form-control" asp-for="Sobrenome" placeholder="Sobrenome">
+      <span class="text-danger" asp-validation-for="Sobrenome"></span>
+    </div>
+    <div class="form-group">
+      <label>Sexo:</label>
+      <select asp-for="Sexo" class="form-control" asp-items="Html.GetEnumSelectList<Marmitex.Domain.Enums.Sexo>()"></select>      
+      <span class="text-danger" asp-validation-for="Sexo"></span>
+    </div>
+    <div class="form-group">
+      <label>CEP:</label>
+      <input class="form-control" asp-for="Cep" placeholder="Cep">
+      <span class="text-danger" asp-validation-for="Cep"></span>
+    </div>
+    <div class="form-group">
+      <label>Rua:</label>
+      <input class="form-control" asp-for="Rua" placeholder="Rua">
+      <span class="text-danger" asp-validation-for="Rua"></span>
+    </div>
+    <div class="form-group">
+      <label>Número da rua:</label>
+      <input class="form-control" type="text" asp-for="RuaNumero" placeholder="Antigo número da rua">
+      <span class="text-danger" asp-validation-for="RuaNumero"></span>
+    </div>
+    <div class="form-group">
+      <label>Bairro</label>
+      <input class="form-control" asp-for="Bairro" type="text" placeholder="Bairro">
+      <span class="text-danger" asp-validation-for="Bairro"></span>
+    </div>
+    <div class="form-group">
+      <label>Numero da casa</label>
+      <input class="form-control" asp-for="NumeroCasa" placeholder="Numero da casa">
+      <span class="text-danger" asp-validation-for="NumeroCasa"></span>
+    </div>
+    <div class="form-group">
+      <label>Telefone</label>
+      <input class="form-control" asp-for="Telefone" placeholder="Telefone">
+      <span class="text-danger" asp-validation-for="Telefone"></span>
+    </div>
+    <div class="form-group">
+      <label>Celular</label>
+      <input class="form-control" asp-for="Celular" placeholder="Celular">
+      <span class="text-danger" asp-validation-for="Celular"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </form>
+</div>
+
+
+@section Scripts {
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
