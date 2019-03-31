@@ -24,15 +24,21 @@ function DeletarClienteById(id) {
       Id: id
     },
     success: function(dados) {
-      swal("Pronto, cliente " + dados.nome + " deletado!", {
-        icon: "success"
-      }).then(ok => {
-        if (ok) {
-          Reload();
-        } else {
-          Reload();
-        }
-      });
+      if (dados != null) {
+        swal("Pronto, cliente " + dados.nome + " deletado!", {
+          icon: "success"
+        }).then(ok => {
+          if (ok) {
+            Reload();
+          } else {
+            Reload();
+          }
+        });
+      } else {
+        swal("Cliente não encontrado!", {
+          icon: "warning"
+        });
+      }
     },
     error: function(error) {
       alert("Erro");

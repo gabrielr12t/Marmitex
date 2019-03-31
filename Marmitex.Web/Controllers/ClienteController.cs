@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -25,6 +26,7 @@ namespace Marmitex.Web.Controllers
         {
             return View();
         }
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Index(string telefone)
         {
@@ -34,24 +36,33 @@ namespace Marmitex.Web.Controllers
                 return View();
             }
             var cliente = _clienteRepository.GetClienteByTelefone(telefone);
-
-            //verificando se encontrou cliente
-            if (string.IsNullOrEmpty(cliente.Nome))
-            {
-                var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
-                return RedirectToAction(nameof(Registro), clienteViewModel);
-            }
-
-            return RedirectToAction(nameof(Registro), cliente);
-            //redirecionar para PEDIDO
-
+            var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
+            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Registro), clienteViewModel) : RedirectToAction(nameof(Listar));
         }
 
         [HttpGet]
-        public IActionResult Registro(int id, ClienteViewModel clienteViewModel)
+        public IActionResult Cadastro(int id, ClienteViewModel clienteViewModel)
         {
             var cliente = _clienteRepository.GetById(id);
             return cliente == null ? View(clienteViewModel) : View(_mapper.Map<ClienteViewModel>(cliente));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Cadastro(ClienteViewModel clienteViewModel)
+        {
+            try
+            {
+                var cliente = _mapper.Map<Cliente>(clienteViewModel);
+                _clienteRepository.Add(cliente);
+
+                ModelState.Clear();
+                return RedirectToAction(nameof(Listar));
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro:{e.Message} ");
+            }
         }
 
         [ValidateAntiForgeryToken]
@@ -62,13 +73,13 @@ namespace Marmitex.Web.Controllers
             {
                 var cliente = _mapper.Map<Cliente>(viewModel);
                 _clienteRepository.Add(cliente);
+
                 ModelState.Clear();
                 return RedirectToAction(nameof(Listar));
             }
             catch (System.Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Banco Dados Falhou {ex.Message}");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro em {ex.Message}");
             }
         }
         [HttpGet]
@@ -77,11 +88,7 @@ namespace Marmitex.Web.Controllers
             var clientes = _clienteRepository.GetAll();
             var mappedCliente = _mapper.Map<List<ClienteViewModel>>(clientes);
 
-            if (mappedCliente.Any())
-            {
-                return View(mappedCliente);
-            }
-            return View(new List<ClienteViewModel>());
+            return mappedCliente.Any() ? View(mappedCliente) : View(new List<ClienteViewModel>());
         }
 
         [HttpPost]
@@ -92,7 +99,8 @@ namespace Marmitex.Web.Controllers
             {
                 _clienteRepository.Remove(cliente);
             }
-            return Ok(cliente);
+            return cliente != null ? Ok(cliente) : null;
+
         }
     }
 }

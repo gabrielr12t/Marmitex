@@ -28,8 +28,6 @@ namespace Marmitex.Web.ViewModels
         public string Rua { get; set; }
 
 
-
-
         [RegularExpression(@"^[0-9]+", ErrorMessage = "Somente números")]
         public int RuaNumero { get; set; }
 
@@ -48,8 +46,7 @@ namespace Marmitex.Web.ViewModels
         [Required(ErrorMessage = "Campo obrigatório")]
         public string Telefone { get; set; }
 
-
-
         public string Celular { get; set; }
+    
     }
 }

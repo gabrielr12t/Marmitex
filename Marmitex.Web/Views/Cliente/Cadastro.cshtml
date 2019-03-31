@@ -2,6 +2,14 @@
 @model Marmitex.Web.ViewModels.ClienteViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
+<script>
+    $(document).ready(function () {              
+      $('#cep').mask('99999-999');      
+    });    
+</script>
 
 <div class="container">
   <h2>Registro de cliente</h2><a href="/Cliente/Listar">Lista de clientes</a><br/>
@@ -25,12 +33,12 @@
     </div>
     <div class="form-group">
       <label>CEP:</label>
-      <input class="form-control" asp-for="Cep" placeholder="Cep">
+      <input class="form-control" id="cep" asp-for="Cep" placeholder="Cep">
       <span class="text-danger" asp-validation-for="Cep"></span>
     </div>
     <div class="form-group">
       <label>Rua:</label>
-      <input class="form-control" asp-for="Rua" placeholder="Rua">
+      <input class="form-control" id="rua" asp-for="Rua" placeholder="Rua">
       <span class="text-danger" asp-validation-for="Rua"></span>
     </div>
     <div class="form-group">
@@ -40,7 +48,7 @@
     </div>
     <div class="form-group">
       <label>Bairro</label>
-      <input class="form-control" asp-for="Bairro" type="text" placeholder="Bairro">
+      <input class="form-control" id="bairro" asp-for="Bairro" type="text" placeholder="Bairro">
       <span class="text-danger" asp-validation-for="Bairro"></span>
     </div>
     <div class="form-group">
@@ -66,3 +74,5 @@
 @section Scripts {
   @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script src="~/js/BuscaCep.js" asp-append-version="true"></script>

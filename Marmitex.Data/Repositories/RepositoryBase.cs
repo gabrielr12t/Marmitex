@@ -17,7 +17,14 @@ namespace Marmitex.Data.Repositories
         }
         public virtual void Add(TEntity obj)
         {
-            _context.Set<TEntity>().Add(obj);
+            if (obj.Id == 0)
+            {
+                //create
+                _context.Set<TEntity>().Add(obj);
+                return;
+            }
+            //update
+            _context.Entry(obj).State = EntityState.Modified;
         }
 
         public virtual IQueryable<TEntity> GetAll()

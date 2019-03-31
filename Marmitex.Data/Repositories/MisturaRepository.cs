@@ -9,5 +9,6 @@ namespace Marmitex.Data.Repositories
         public MisturaRepository(ApplicationDbContext context) : base(context)
         {
         }
+         
     }
 }

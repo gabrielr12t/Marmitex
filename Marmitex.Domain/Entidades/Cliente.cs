@@ -22,18 +22,17 @@ namespace Marmitex.Domain.Entidades
         {
 
         }
-        public Cliente(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        public Cliente(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular)
         {
-            SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
+            SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular);
         }
-        public void Update(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        public void Update(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular)
         {
-            SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
+            SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular);
         }
 
-        private void SetProperties(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        private void SetProperties(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular)
         {
-            this.DataCadastro = dataCadastro;
             if (id == 0)
                 DataCadastro = DateTime.Now;
 
@@ -41,7 +40,7 @@ namespace Marmitex.Domain.Entidades
             this.Nome = nome.Trim();
             this.Sobrenome = sobrenome.Trim();
             this.Sexo = sexo;
-            this.Cep = !string.IsNullOrEmpty(cep) ? cep : ""; 
+            this.Cep = !string.IsNullOrEmpty(cep) ? cep : "";
             this.Rua = rua.Trim();
             this.RuaNumero = ruaNumero;
             this.Bairro = bairro.Trim();

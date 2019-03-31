@@ -13,21 +13,23 @@ namespace Marmitex.Data.Repositories
 
         // Registro de cliente
 
-
         public override void Add(Cliente obj)
         {
+            Cliente cliente = null;
 
-            var cliente = GetById(obj.Id);
-            if (cliente != null)
+            if (obj.Id == 0)
             {
-                //Update                
-                cliente.Update(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular, cliente.DataCadastro);
+                //create
+                cliente = new Cliente(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular);
+                _context.Clientes.Add(cliente);
                 return;
             }
-            //Create
-            cliente = new Cliente(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular, DateTime.Now);
-            _context.Add(cliente);
+            //update    
+            cliente = GetById(obj.Id);
+            cliente.Update(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa,
+            obj.Telefone, obj.Celular);
         }
+
 
         public IQueryable<Pedido> ClientePedidos(int id)
         {
@@ -43,25 +45,14 @@ namespace Marmitex.Data.Repositories
 
             var cliente = telefoneIsValid ? _context.Set<Cliente>().FirstOrDefault(c => c.Telefone.Equals(telefone) || c.Celular.Equals(telefone)) : null;
 
-            if (cliente == null)
-            {
-                cliente = new Cliente();
+            // if (cliente == null)
+            // {
+            //     cliente = new Cliente();
+            //     cliente.Celular = isCelular ? telefone : null;
+            //     cliente.Telefone = isTelefone ? telefone : null;
+            // }
 
-                if (isCelular)
-                {
-                    cliente.Celular = telefone;
-                }
-                else if (isTelefone)
-                {
-                    cliente.Telefone = telefone;
-                }
-                return cliente;
-            }
-            else
-            {
-                return cliente;
-            }
-
+            return cliente;
         }
     }
 }

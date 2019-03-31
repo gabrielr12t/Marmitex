@@ -8,7 +8,8 @@ namespace Marmitex.Web.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<Cliente, ClienteViewModel>().ReverseMap();                
+            CreateMap<Cliente, ClienteViewModel>().ReverseMap();
+            //CreateMap<Mistura, MisturaViewModel>().ReverseMap();
         }
     }
 }
