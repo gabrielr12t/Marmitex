@@ -8,6 +8,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App"/>
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All"/>
     <PackageReference Include="AutoMapper" Version="8.0.0"/>
+    <PackageReference Include="ADODB" Version="7.10.3077"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Marmitex.Domain\Marmitex.Domain.csproj"/>

@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.2",
-    "signature": "7323dee0cfb7a0a36ce8bfd51eaaa95467d1a42c"
+    "signature": "ef94912a3d3bccbd571b02f33511f7133bbd023f"
   },
   "compilationOptions": {
     "defines": [
@@ -24,6 +24,7 @@
     ".NETCoreApp,Version=v2.2": {
       "Marmitex.Web/1.0.0": {
         "dependencies": {
+          "ADODB": "7.10.3077",
           "AutoMapper": "8.0.0",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "6.0.0",
           "Marmitex.DI": "1.0.0",
@@ -37,6 +38,17 @@
         },
         "compile": {
           "Marmitex.Web.dll": {}
+        }
+      },
+      "ADODB/7.10.3077": {
+        "runtime": {
+          "lib/adodb.dll": {
+            "assemblyVersion": "7.0.3300.0",
+            "fileVersion": "7.10.3077.0"
+          }
+        },
+        "compile": {
+          "lib/adodb.dll": {}
         }
       },
       "AutoMapper/8.0.0": {
@@ -3337,6 +3349,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "ADODB/7.10.3077": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0W53Z55+9fOi+3YBFey+L0Ts2ePdjjK3QnkY7UZWeoZ6miSb7lbH6OJNxtQx0LO+8gEeTJnptbNHLZOzp4B2Bg==",
+      "path": "adodb/7.10.3077",
+      "hashPath": "adodb.7.10.3077.nupkg.sha512"
     },
     "AutoMapper/8.0.0": {
       "type": "package",

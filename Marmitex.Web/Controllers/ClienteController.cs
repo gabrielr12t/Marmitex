@@ -26,6 +26,7 @@ namespace Marmitex.Web.Controllers
         {
             return View();
         }
+
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Index(string telefone)
@@ -37,12 +38,12 @@ namespace Marmitex.Web.Controllers
             }
             var cliente = _clienteRepository.GetClienteByTelefone(telefone);
             var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
-            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Registro), clienteViewModel) : RedirectToAction(nameof(Listar));
+            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), clienteViewModel) : RedirectToAction(nameof(Listar));
         }
 
         [HttpGet]
         public IActionResult Cadastro(int id, ClienteViewModel clienteViewModel)
-        {
+        {           
             var cliente = _clienteRepository.GetById(id);
             return cliente == null ? View(clienteViewModel) : View(_mapper.Map<ClienteViewModel>(cliente));
         }
@@ -61,27 +62,11 @@ namespace Marmitex.Web.Controllers
             }
             catch (Exception e)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro:{e.Message} ");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro: {e.Message} ");
             }
         }
 
-        [ValidateAntiForgeryToken]
-        [HttpPost]
-        public IActionResult Registro(ClienteViewModel viewModel)
-        {
-            try
-            {
-                var cliente = _mapper.Map<Cliente>(viewModel);
-                _clienteRepository.Add(cliente);
 
-                ModelState.Clear();
-                return RedirectToAction(nameof(Listar));
-            }
-            catch (System.Exception ex)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro em {ex.Message}");
-            }
-        }
         [HttpGet]
         public IActionResult Listar()
         {

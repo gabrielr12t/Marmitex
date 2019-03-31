@@ -4,16 +4,18 @@
  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
-
+ 
 <script>
     $(document).ready(function () {              
-      $('#cep').mask('99999-999');      
+      $('#cep').mask('99999-999'); 
+      $('.celular').mask('(00) 00000-0000'); 
+      $('.telefone').mask('(00) 0000-0000');      
     });    
 </script>
 
 <div class="container">
   <h2>Registro de cliente</h2><a href="/Cliente/Listar">Lista de clientes</a><br/>
-  <form asp-controller="Cliente" asp-action="Registro"  >
+  <form asp-controller="Cliente" asp-action="Registro" method="POST">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="Id" >
     <div class="form-group">
@@ -58,12 +60,12 @@
     </div>
     <div class="form-group">
       <label>Telefone</label>
-      <input class="form-control" asp-for="Telefone" placeholder="Telefone">
+      <input class="form-control telefone" asp-for="Telefone" placeholder="Telefone">
       <span class="text-danger" asp-validation-for="Telefone"></span>
     </div>
     <div class="form-group">
       <label>Celular</label>
-      <input class="form-control" asp-for="Celular" placeholder="Celular">
+      <input class="form-control celular" asp-for="Celular" placeholder="Celular">
       <span class="text-danger" asp-validation-for="Celular"></span>
     </div>
     <button type="submit" class="btn btn-primary">Salvar</button>

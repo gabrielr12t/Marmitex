@@ -20,7 +20,7 @@ namespace Marmitex.Web.ViewModels
         [EnumDataType(typeof(Sexo))]
         public Sexo Sexo { get; set; }
 
-         
+
         public string Cep { get; set; }
 
 
@@ -29,7 +29,7 @@ namespace Marmitex.Web.ViewModels
 
 
         [RegularExpression(@"^[0-9]+", ErrorMessage = "Somente números")]
-        public int RuaNumero { get; set; }
+        public int? RuaNumero { get; set; }
 
 
 
@@ -47,6 +47,8 @@ namespace Marmitex.Web.ViewModels
         public string Telefone { get; set; }
 
         public string Celular { get; set; }
+
+
     
     }
 }

@@ -20,14 +20,15 @@ namespace Marmitex.Data.Repositories
             if (obj.Id == 0)
             {
                 //create
-                cliente = new Cliente(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular);
+                cliente = new Cliente(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua,
+                obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular, DateTime.Now);
                 _context.Clientes.Add(cliente);
                 return;
             }
             //update    
             cliente = GetById(obj.Id);
             cliente.Update(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa,
-            obj.Telefone, obj.Celular);
+            obj.Telefone, obj.Celular, cliente.DataCadastro);
         }
 
 
@@ -45,12 +46,12 @@ namespace Marmitex.Data.Repositories
 
             var cliente = telefoneIsValid ? _context.Set<Cliente>().FirstOrDefault(c => c.Telefone.Equals(telefone) || c.Celular.Equals(telefone)) : null;
 
-            // if (cliente == null)
-            // {
-            //     cliente = new Cliente();
-            //     cliente.Celular = isCelular ? telefone : null;
-            //     cliente.Telefone = isTelefone ? telefone : null;
-            // }
+            if (cliente == null)
+            {
+                cliente = new Cliente();
+                cliente.Celular = isCelular ? telefone : null;
+                cliente.Telefone = isTelefone ? telefone : null;
+            }
 
             return cliente;
         }
