@@ -8,12 +8,26 @@ namespace Marmitex.Domain.Entidades
         public string Nome { get; set; }
         public DateTime Data { get; private set; }
         public decimal AcrescimoValor { get; set; } // exemplo feijoada
-        public Mistura(string nome, decimal acrescimoValor)
+
+        public Mistura(string nome, decimal acrescimoValor, DateTime data)
+        {
+            SetProperties(nome, acrescimoValor, data);
+        }
+        public Mistura()
+        {
+
+        }
+
+        private void SetProperties(string nome, decimal acrescimoValor, DateTime data)
         {
             this.Nome = nome;
             this.AcrescimoValor = acrescimoValor;
-            this.Data = DateTime.Now;
+            this.Data = this.Id > 0 ? data : DateTime.Now;
         }
-         
+
+        public void Update(string nome, decimal acrescimoValor, DateTime data)
+        {
+            SetProperties(nome, acrescimoValor, data);
+        }
     }
 }

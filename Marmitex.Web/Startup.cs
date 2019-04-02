@@ -83,7 +83,7 @@ namespace Marmitex.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Cliente}/{action=Index}/{id?}");
+                    template: "{controller=Mistura}/{action=Registro}/{id?}");
             });
         }
     }

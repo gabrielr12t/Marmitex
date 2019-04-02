@@ -1,3 +1,3 @@
 use MarmitexDB
 
-SELECT * FROM Clientes
+SELECT * FROM Misturas

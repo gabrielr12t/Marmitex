@@ -14,7 +14,6 @@ namespace Marmitex.Web.Controllers
     {
         private readonly IClienteRepository _clienteRepository;
         private readonly IMapper _mapper;
-
         public ClienteController(IClienteRepository clienteRepository, IMapper mapper)
         {
             _clienteRepository = clienteRepository;
@@ -43,7 +42,7 @@ namespace Marmitex.Web.Controllers
 
         [HttpGet]
         public IActionResult Cadastro(int id, ClienteViewModel clienteViewModel)
-        {           
+        {
             var cliente = _clienteRepository.GetById(id);
             return cliente == null ? View(clienteViewModel) : View(_mapper.Map<ClienteViewModel>(cliente));
         }
@@ -56,7 +55,6 @@ namespace Marmitex.Web.Controllers
             {
                 var cliente = _mapper.Map<Cliente>(clienteViewModel);
                 _clienteRepository.Add(cliente);
-
                 ModelState.Clear();
                 return RedirectToAction(nameof(Listar));
             }
@@ -66,13 +64,11 @@ namespace Marmitex.Web.Controllers
             }
         }
 
-
         [HttpGet]
         public IActionResult Listar()
         {
             var clientes = _clienteRepository.GetAll();
             var mappedCliente = _mapper.Map<List<ClienteViewModel>>(clientes);
-
             return mappedCliente.Any() ? View(mappedCliente) : View(new List<ClienteViewModel>());
         }
 
@@ -80,12 +76,10 @@ namespace Marmitex.Web.Controllers
         public IActionResult Delete(int Id)
         {
             var cliente = _clienteRepository.GetById(Id);
-            if (cliente != null)
-            {
-                _clienteRepository.Remove(cliente);
-            }
-            return cliente != null ? Ok(cliente) : null;
+            if (cliente != null) _clienteRepository.Remove(cliente);
 
+            if (cliente != null) return Ok(cliente);
+            else return Json(new { Success = false });
         }
     }
 }

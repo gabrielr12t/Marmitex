@@ -15,7 +15,7 @@ $(".excluirCliente").click(function() {
   });
 });
 
-function DeletarClienteById(id) {
+async function DeletarClienteById(id) {
   $.ajax({
     dataType: "json",
     type: "POST",
@@ -23,29 +23,21 @@ function DeletarClienteById(id) {
     data: {
       Id: id
     },
-    success: function(dados) {
-      if (dados != null) {
-        swal("Pronto, cliente " + dados.nome + " deletado!", {
-          icon: "success"
-        }).then(ok => {
-          if (ok) {
-            Reload();
-          } else {
-            Reload();
-          }
-        });
-      } else {
-        swal("Cliente não encontrado!", {
-          icon: "warning"
-        });
-      }
+    success: await function(dados) {
+      swal("Pronto, cliente " + dados.nome + " deletado!", {
+        icon: "success"
+      }).then(ok => {
+        if (ok) {
+          Reload();
+        } else {
+          Reload();
+        }
+      });
     },
-    error: function(error) {
-      alert("Erro");
-    }
+    error: swal("Opa!", "Esse cliente não existe!", "warning")
   });
 }
 
 function Reload() {
-  setTimeout(() => location.reload(), 100);
+  setTimeout(() => location.reload(), 500);
 }

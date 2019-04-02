@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Marmitex.Data.Context;
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.Interfaces;
@@ -45,6 +46,11 @@ namespace Marmitex.Data.Repositories
 
             if (query.Any())
                 _context.Set<TEntity>().Remove(obj);
+        }
+
+        public async Task Save()
+        {
+           await _context.SaveChangesAsync();
         }
 
         public virtual void Update(TEntity obj)

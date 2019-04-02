@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Marmitex.Domain.BaseEntity;
 
 namespace Marmitex.Domain.Interfaces
@@ -9,6 +11,7 @@ namespace Marmitex.Domain.Interfaces
         TEntity GetById(long id);
         IQueryable<TEntity> GetAll();
         void Update(TEntity obj);
-        void Remove(TEntity obj);        
+        void Remove(TEntity obj);
+        Task Save();
     }
 }
