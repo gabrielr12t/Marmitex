@@ -20,7 +20,7 @@
     <input type="hidden" asp-for="Id" >
     <div class="form-group">
       <label>Nome:</label>
-      <input class="form-control" asp-for="Nome" placeholder="Nome">
+      <input class="form-control" autofocus asp-for="Nome" placeholder="Nome">
       <span class="text-danger" asp-validation-for="Nome"></span>
     </div>
     <div class="form-group">
@@ -68,7 +68,7 @@
       <input class="form-control celular" asp-for="Celular" placeholder="Celular">
       <span class="text-danger" asp-validation-for="Celular"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Salvar</button>
+    <input type="submit" class="btn btn-primary" value="Salvar"/>
   </form>
 </div>
 

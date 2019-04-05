@@ -11,6 +11,7 @@ namespace Marmitex.DI
         public static void ConfigureServices(IServiceCollection services, string conection)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(conection));
+            
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
             services.AddScoped(typeof(IAcompanhamentoRepository), typeof(AcompanhamentoRepository));
             services.AddScoped(typeof(IClienteRepository), typeof(ClienteRepository));

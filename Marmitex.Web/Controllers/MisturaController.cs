@@ -26,16 +26,17 @@ namespace Marmitex.Web.Controllers
         [HttpGet]
         public IActionResult Registro(int id)
         {
+            //removendo misturas antigas
+             _misturaRepository.RemoveMisturaAntiga();
+             _misturaRepository.Save();
             //get all misturas do dia
             var misturaViewModel = new MisturaViewModel();
             // -----------------------
             var mistura = _misturaRepository.GetById(id);
-
             if (mistura != null) misturaViewModel = _mapper.Map<MisturaViewModel>(mistura);
-
             //atribuindo misturas do dia a viewModel
             misturaViewModel.Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.GetAll());//list de misturas para viewModel
-            ModelState.Clear();
+            // ModelState.Clear();
             return View(misturaViewModel);
 
         }
@@ -44,14 +45,13 @@ namespace Marmitex.Web.Controllers
         public async Task<IActionResult> Registro(MisturaViewModel misturaViewModel)
         {
             try
-            {               
+            {
                 _misturaRepository.Add(_mapper.Map<Mistura>(misturaViewModel));
                 await _misturaRepository.Save();
                 //Get all misturas do dia
                 var MisturaMapper = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.GetAll());//list de misturas para viewModel
 
-                misturaViewModel = new MisturaViewModel();
-                misturaViewModel.Misturas = MisturaMapper;
+                misturaViewModel = new MisturaViewModel { Misturas = MisturaMapper };
                 // -----------------------------                
                 ModelState.Clear();
 
@@ -72,7 +72,6 @@ namespace Marmitex.Web.Controllers
             if (mistura != null) _misturaRepository.Remove(mistura);
             //await _misturaRepository.Save();
             return RedirectToAction(nameof(Registro));
-
         }
     }
 }

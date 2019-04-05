@@ -40,11 +40,11 @@ namespace Marmitex.Data.Repositories
 
         public Cliente GetClienteByTelefone(string telefone)
         {
-            bool isCelular = telefone.Length == 15;
-            bool isTelefone = telefone.Length == 14;
-            bool telefoneIsValid = !string.IsNullOrEmpty(telefone) && (isCelular || isTelefone);
+            bool isCelular = telefone != null && telefone.Length == 15;
+            bool isTelefone = telefone != null && telefone.Length == 14;
+            bool telefoneIsValid = !string.IsNullOrEmpty(telefone) && (isCelular || isTelefone);            
 
-            var cliente = telefoneIsValid ? _context.Set<Cliente>().FirstOrDefault(c => c.Telefone.Equals(telefone) || c.Celular.Equals(telefone)) : null;
+            var cliente = telefoneIsValid ? _context.Set<Cliente>().FirstOrDefault(c => c.Telefone.Equals(telefone.Trim()) || c.Celular.Equals(telefone.Trim())) : null;
 
             if (cliente == null)
             {

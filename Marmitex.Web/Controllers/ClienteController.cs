@@ -32,19 +32,19 @@ namespace Marmitex.Web.Controllers
         {
             if (string.IsNullOrEmpty(telefone))
             {
-                ViewBag.Message = "Preencha o campo";
+                ViewBag.Message = "Preencha o campo telefone";
                 return View();
             }
             var cliente = _clienteRepository.GetClienteByTelefone(telefone);
-            var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
-            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), clienteViewModel) : RedirectToAction(nameof(Listar));
+            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = telefone }) : RedirectToAction(nameof(Listar));
+            //o else do return precisa retornar para o pedido
         }
 
         [HttpGet]
-        public IActionResult Cadastro(int id, ClienteViewModel clienteViewModel)
+        public IActionResult Cadastro(int id, string numero = null)
         {
-            var cliente = _clienteRepository.GetById(id);
-            return cliente == null ? View(clienteViewModel) : View(_mapper.Map<ClienteViewModel>(cliente));
+            var cliente = id > 0 ? _clienteRepository.GetById(id) : ((!string.IsNullOrEmpty(numero)) ? _clienteRepository.GetClienteByTelefone(numero) : new Cliente());
+            return View(_mapper.Map<ClienteViewModel>(cliente));
         }
 
         [HttpPost]
@@ -77,9 +77,7 @@ namespace Marmitex.Web.Controllers
         {
             var cliente = _clienteRepository.GetById(Id);
             if (cliente != null) _clienteRepository.Remove(cliente);
-
-            if (cliente != null) return Ok(cliente);
-            else return Json(new { Success = false });
+            return cliente != null ? Ok(cliente) : null;
         }
     }
 }

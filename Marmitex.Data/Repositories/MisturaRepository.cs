@@ -1,17 +1,16 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Marmitex.Data.Context;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Marmitex.Data.Repositories
 {
     public class MisturaRepository : RepositoryBase<Mistura>, IMisturaRepository
     {
-        public MisturaRepository(ApplicationDbContext context) : base(context)
-        {
-        }
-
+        public MisturaRepository(ApplicationDbContext context) : base(context) { }
         public override void Add(Mistura obj)
         {
             var mistura = obj.Id > 0 ? _context.Misturas.FirstOrDefault(x => x.Id == obj.Id) : null;
@@ -24,12 +23,11 @@ namespace Marmitex.Data.Repositories
             }
             //update
             mistura.Update(obj.Nome, obj.AcrescimoValor, mistura.Data);
-
         }
-        public override IQueryable<Mistura> GetAll()
+        public void RemoveMisturaAntiga()
         {
-            //get mistura do dia
-            return _context.Misturas.Where(c => c.Data.ToShortDateString().Equals(DateTime.Now.ToShortDateString()));
+            _context.Misturas.RemoveRange(_context.Misturas.Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()));
+            // await _context.SaveChangesAsync();
         }
     }
 }
