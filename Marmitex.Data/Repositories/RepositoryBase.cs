@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Marmitex.Data.Context;
 using Marmitex.Domain.BaseEntity;
+using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,35 +28,34 @@ namespace Marmitex.Data.Repositories
             //update
             _context.Entry(obj).State = EntityState.Modified;
         }
-
         public virtual IQueryable<TEntity> GetAll()
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
             query = query.AsNoTracking();
             return query;
         }
-
         public virtual TEntity GetById(long id)
         {
             return id > 0 ? _context.Set<TEntity>().FirstOrDefault(e => e.Id == id) : null;
         }
-
         public virtual void Remove(TEntity obj)
         {
             var query = _context.Set<TEntity>().Where(e => e.Id == obj.Id);
 
-            if (query.Any())
-                _context.Set<TEntity>().Remove(obj);
+            if (query.Any()) _context.Set<TEntity>().Remove(obj);
         }
-
         public async Task Save()
         {
-           await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
-
         public virtual void Update(TEntity obj)
         {
             _context.Entry(obj).State = EntityState.Modified;
         }
+        public async void RemoveProdutoAntigo<T>() where T : Cardapio
+        {
+            _context.Set<T>().RemoveRange(_context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()));
+            await Save();
+        }         
     }
 }

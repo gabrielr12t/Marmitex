@@ -3,14 +3,26 @@ using Marmitex.Domain.BaseEntity;
 
 namespace Marmitex.Domain.Entidades
 {
-    public class Acompanhamento : Entity
+    public class Acompanhamento : Cardapio
     {
-        public string Nome { get; set; }
-        public DateTime Data { get; private set; }
-
         public Acompanhamento()
         {
-            Data = DateTime.Now;
+
+        }
+        public Acompanhamento(string nome, DateTime data)
+        {
+            SetProperties(nome, data);
+        }
+
+        private void SetProperties(string nome, DateTime data)
+        {
+            this.Nome = nome;
+            this.Data = this.Id > 0 ? data : DateTime.Now;
+        }
+
+        public void Update(string nome, decimal acrescimoValor, DateTime data)
+        {
+            SetProperties(nome, data);
         }
     }
 }

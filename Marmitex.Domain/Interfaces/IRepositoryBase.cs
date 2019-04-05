@@ -5,7 +5,7 @@ using Marmitex.Domain.BaseEntity;
 
 namespace Marmitex.Domain.Interfaces
 {
-    public interface IRepositoryBase<TEntity> where TEntity : Entity
+    public interface IRepositoryBase<TEntity>
     {
         void Add(TEntity obj);
         TEntity GetById(long id);
@@ -13,5 +13,6 @@ namespace Marmitex.Domain.Interfaces
         void Update(TEntity obj);
         void Remove(TEntity obj);
         Task Save();
+        void RemoveProdutoAntigo<T>() where T : Cardapio;
     }
 }

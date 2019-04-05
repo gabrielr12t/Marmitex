@@ -3,10 +3,8 @@ using Marmitex.Domain.BaseEntity;
 
 namespace Marmitex.Domain.Entidades
 {
-    public class Mistura : Entity
+    public class Mistura : Cardapio
     {
-        public string Nome { get; set; }
-        public DateTime Data { get; private set; }
         public decimal AcrescimoValor { get; set; } // exemplo feijoada
 
         public Mistura(string nome, decimal acrescimoValor, DateTime data)

@@ -3,13 +3,26 @@ using Marmitex.Domain.BaseEntity;
 
 namespace Marmitex.Domain.Entidades
 {
-    public class Salada : Entity
+    public class Salada : Cardapio
     {
-        public string Nome { get; set; }
-        public DateTime Data { get; set; }
         public Salada()
         {
-            Data = DateTime.Now;
+
+        }
+        public Salada(string nome, DateTime data)
+        {
+            SetProperties(nome, data);
+        }
+
+        private void SetProperties(string nome, DateTime data)
+        {
+            this.Nome = nome;
+            this.Data = this.Id > 0 ? data : DateTime.Now;
+        }
+
+        public void Update(string nome, DateTime data)
+        {
+            SetProperties(nome, data);
         }
     }
 }

@@ -11,8 +11,10 @@ namespace Marmitex.DI
         public static void ConfigureServices(IServiceCollection services, string conection)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(conection));
-            
+
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
+
+
             services.AddScoped(typeof(IAcompanhamentoRepository), typeof(AcompanhamentoRepository));
             services.AddScoped(typeof(IClienteRepository), typeof(ClienteRepository));
             services.AddScoped(typeof(IItensPedidoRepository), typeof(ItensPedidoRepository));
@@ -20,6 +22,7 @@ namespace Marmitex.DI
             services.AddScoped(typeof(IMisturaRepository), typeof(MisturaRepository));
             services.AddScoped(typeof(IPedidoRepository), typeof(PedidoRepository));
             services.AddScoped(typeof(ISaladaRepository), typeof(SaladaRepository));
+            services.AddScoped(typeof(ICardapioRepository<>), typeof(CardapioRepository<>));
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
         }

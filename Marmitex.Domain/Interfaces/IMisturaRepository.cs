@@ -5,6 +5,6 @@ namespace Marmitex.Domain.Interfaces
 {
     public interface IMisturaRepository : IRepositoryBase<Mistura>
     {
-        void RemoveMisturaAntiga();
+
     }
 }

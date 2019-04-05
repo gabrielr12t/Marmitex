@@ -13,7 +13,11 @@ namespace Marmitex.Web.Helpers
 
             CreateMap<Mistura, MisturaViewModel>().ReverseMap();
 
+            CreateMap<Acompanhamento, AcompanhamentoViewModel>().ReverseMap();
+
             CreateMap<MisturaViewModel, Mistura>().ReverseMap();
+
+            CreateMap<SaladaViewModel, Salada>().ReverseMap();
 
         }
     }

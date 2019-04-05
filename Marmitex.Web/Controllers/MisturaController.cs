@@ -20,15 +20,13 @@ namespace Marmitex.Web.Controllers
         {
             _misturaRepository = misturaRepository;
             _mapper = mapper;
+            _misturaRepository.RemoveProdutoAntigo<Mistura>();
         }
-
 
         [HttpGet]
         public IActionResult Registro(int id)
         {
             //removendo misturas antigas
-             _misturaRepository.RemoveMisturaAntiga();
-             _misturaRepository.Save();
             //get all misturas do dia
             var misturaViewModel = new MisturaViewModel();
             // -----------------------
@@ -64,12 +62,11 @@ namespace Marmitex.Web.Controllers
             }
         }
 
-
         public IActionResult Delete(int Id)
         {
             ModelState.Clear();
             var mistura = _misturaRepository.GetById(Id);
-            if (mistura != null) _misturaRepository.Remove(mistura);
+            _misturaRepository.Remove(mistura);
             //await _misturaRepository.Save();
             return RedirectToAction(nameof(Registro));
         }

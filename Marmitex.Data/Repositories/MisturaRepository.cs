@@ -24,10 +24,5 @@ namespace Marmitex.Data.Repositories
             //update
             mistura.Update(obj.Nome, obj.AcrescimoValor, mistura.Data);
         }
-        public void RemoveMisturaAntiga()
-        {
-            _context.Misturas.RemoveRange(_context.Misturas.Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()));
-            // await _context.SaveChangesAsync();
-        }
     }
 }
