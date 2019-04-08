@@ -1,3 +1,3 @@
 use Marmitex
 
-SELECT * FROM Marmitas
+SELECT * FROM Pedidos
