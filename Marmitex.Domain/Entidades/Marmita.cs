@@ -11,7 +11,14 @@ namespace Marmitex.Domain.Entidades
         public decimal Valor { get; private set; }
         public Tamanho Tamanho { get; set; }
         public virtual Mistura Mistura { get; set; }
+        
+        public string Observacao { get; set; }
+        // teste
+        public virtual IEnumerable<Salada> Saladas { get; set; }
+        public virtual IEnumerable<Mistura> Misturas { get; set; }
         public virtual IEnumerable<Acompanhamento> Acompanhamentos { get; set; }
+        // public virtual IEnumerable<Tamanho> Tamanhos { get; set; }
+
 
         public Marmita() { }
         public Marmita(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, List<Acompanhamento> acompanhamentos)

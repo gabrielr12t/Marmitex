@@ -36,8 +36,8 @@ namespace Marmitex.Web.Controllers
                 return View();
             }
             var cliente = _clienteRepository.GetClienteByTelefone(telefone);
-            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = telefone }) : RedirectToAction(nameof(Listar));
-            //o else do return precisa retornar para o pedido
+            // return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = telefone }) : RedirectToAction(nameof(Listar));
+            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = telefone }) : RedirectToAction("Registro", "Marmita");
         }
 
         [HttpGet]

@@ -1,3 +1,3 @@
-use MarmitexDB
+use Marmitex
 
-SELECT * FROM Saladas
+SELECT * FROM Marmitas

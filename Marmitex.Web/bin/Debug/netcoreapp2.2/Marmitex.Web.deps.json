@@ -289,9 +289,11 @@
       "Marmitex.Data/1.0.0": {
         "dependencies": {
           "Marmitex.Domain": "1.0.0",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "2.2.0",
           "Microsoft.EntityFrameworkCore": "2.2.3",
           "Microsoft.EntityFrameworkCore.Design": "2.2.3",
-          "Microsoft.EntityFrameworkCore.SqlServer": "2.2.3"
+          "Microsoft.EntityFrameworkCore.SqlServer": "2.2.3",
+          "Microsoft.Extensions.Configuration.Json": "2.2.0"
         },
         "runtime": {
           "Marmitex.Data.dll": {}

@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Marmitex.Domain.Entidades;
@@ -8,11 +6,10 @@ using Marmitex.Domain.Interfaces;
 using Marmitex.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Marmitex.Web.Controllers
 {
-    public class MisturaController : Controller
+   public class MisturaController : Controller
     {
         private readonly IMisturaRepository _misturaRepository;
         private readonly IMapper _mapper;
@@ -20,13 +17,15 @@ namespace Marmitex.Web.Controllers
         {
             _misturaRepository = misturaRepository;
             _mapper = mapper;
-            _misturaRepository.RemoveProdutoAntigo<Mistura>();
         }
+
 
         [HttpGet]
         public IActionResult Registro(int id)
         {
             //removendo misturas antigas
+             _misturaRepository.RemoveProdutoAntigo<Mistura>();
+             _misturaRepository.Save();
             //get all misturas do dia
             var misturaViewModel = new MisturaViewModel();
             // -----------------------
@@ -62,11 +61,12 @@ namespace Marmitex.Web.Controllers
             }
         }
 
+
         public IActionResult Delete(int Id)
         {
             ModelState.Clear();
             var mistura = _misturaRepository.GetById(Id);
-            _misturaRepository.Remove(mistura);
+            if (mistura != null) _misturaRepository.Remove(mistura);
             //await _misturaRepository.Save();
             return RedirectToAction(nameof(Registro));
         }

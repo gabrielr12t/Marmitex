@@ -4,14 +4,16 @@ using Marmitex.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Marmitex.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190405190349_ConsertandoBanco")]
+    partial class ConsertandoBanco
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,8 +100,6 @@ namespace Marmitex.Data.Migrations
 
                     b.Property<long?>("MisturaId");
 
-                    b.Property<string>("Observacao");
-
                     b.Property<long?>("SaladaId");
 
                     b.Property<int>("Tamanho");
@@ -125,13 +125,9 @@ namespace Marmitex.Data.Migrations
 
                     b.Property<DateTime>("Data");
 
-                    b.Property<long?>("MarmitaId");
-
                     b.Property<string>("Nome");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MarmitaId");
 
                     b.ToTable("Misturas");
                 });
@@ -163,13 +159,9 @@ namespace Marmitex.Data.Migrations
 
                     b.Property<DateTime>("Data");
 
-                    b.Property<long?>("MarmitaId");
-
                     b.Property<string>("Nome");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MarmitaId");
 
                     b.ToTable("Saladas");
                 });
@@ -203,25 +195,11 @@ namespace Marmitex.Data.Migrations
                         .HasForeignKey("SaladaId");
                 });
 
-            modelBuilder.Entity("Marmitex.Domain.Entidades.Mistura", b =>
-                {
-                    b.HasOne("Marmitex.Domain.Entidades.Marmita")
-                        .WithMany("Misturas")
-                        .HasForeignKey("MarmitaId");
-                });
-
             modelBuilder.Entity("Marmitex.Domain.Entidades.Pedido", b =>
                 {
                     b.HasOne("Marmitex.Domain.Entidades.Cliente", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClienteId");
-                });
-
-            modelBuilder.Entity("Marmitex.Domain.Entidades.Salada", b =>
-                {
-                    b.HasOne("Marmitex.Domain.Entidades.Marmita")
-                        .WithMany("Saladas")
-                        .HasForeignKey("MarmitaId");
                 });
 #pragma warning restore 612, 618
         }

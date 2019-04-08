@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Marmitex.Domain.Entidades;
@@ -41,7 +42,7 @@ namespace Marmitex.Web.Controllers
                 //_cardapioRepository.AddCardapio<Salada>(_mapper.Map<Salada>(saladaViewModel));
                 await _cardapioRepository.Save();
 
-                var SaladaMapper = _mapper.Map<List<SaladaViewModel>>(_cardapioRepository.GetAll());
+                var SaladaMapper = _mapper.Map<IQueryable<SaladaViewModel>>(_cardapioRepository.GetAll());
                 saladaViewModel = new SaladaViewModel { Saladas = SaladaMapper };
                 ModelState.Clear();
                 return View(saladaViewModel);

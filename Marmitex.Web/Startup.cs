@@ -18,8 +18,20 @@ namespace Marmitex.Web
 {
     public class Startup
     {
+
+        // public Startup(IHostingEnvironment env)
+        // {
+        //     var builder = new ConfigurationBuilder()
+        //         .SetBasePath(env.ContentRootPath)
+        //         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        //         .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+        //         .AddEnvironmentVariables();
+        //     Configuration = builder.Build();
+        // }
+        
         public Startup(IConfiguration configuration)
         {
+
             Configuration = configuration;
         }
 
@@ -35,7 +47,7 @@ namespace Marmitex.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            Init.ConfigureServices(services, Configuration.GetConnectionString("conectionString"));
+            Init.ConfigureServices(services, Configuration.GetConnectionString("DefaultConnection"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -80,13 +92,13 @@ namespace Marmitex.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Salada}/{action=Registro}/{id?}");
+                    template: "{controller=Mistura}/{action=Registro}/{id?}");
             });
         }
     }

@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        //dentro do data
+        "migration" : "dotnet ef --startup-project .\\Marmitex.Web\\Marmitex.Web.csproj migrations add ConsertandoMistura"
+    }
+}

@@ -31,8 +31,7 @@ namespace Marmitex.Data.Repositories
         public virtual IQueryable<TEntity> GetAll()
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
-            query = query.AsNoTracking();
-            return query;
+            return query.AsQueryable().AsNoTracking();
         }
         public virtual TEntity GetById(long id)
         {
@@ -56,6 +55,6 @@ namespace Marmitex.Data.Repositories
         {
             _context.Set<T>().RemoveRange(_context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()));
             await Save();
-        }         
+        }
     }
 }

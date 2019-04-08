@@ -1,0 +1,68 @@
+@model Marmitex.Web.ViewModels.MarmitaViewModel
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+<div class="container">
+  <p>Selecione os itens que o cliente pedir</p>
+  <hr>
+  <form asp-controller="Marmita" asp-action="Registro">
+    <h1 class="display-4">Escolha uma mistura do dia</h1>
+    @if (Model.Misturas.Any())
+    {
+        @foreach (var item in Model.Misturas)
+        {
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="@item.Nome" name="example2">
+            <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
+          </div>
+        }
+    }else{
+      <h6>Não há misturas cadastradas hoje! <a href="/Mistura/Registro" class="btn btn-link">Cadastrar agora</a></h6>
+    }
+    <hr>
+    <h1 class="display-4">Escolha dois acompanhamentos do dia</h1>
+    @if (Model.Acompanhamentos.Any())
+    {
+        @foreach (var item in Model.Acompanhamentos)
+        {
+          <div class="custom-control custom-checkbox mb-3">
+            <input type="checkbox" class="custom-control-input" id="@item.Nome" name="example1">
+            <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
+          </div>
+        }
+    }else{
+      <h6>Não há acompanhamentos cadastrados hoje! <a href="/Acompanhamento/Registro" class="btn btn-link">Cadastrar agora</a></h6>
+    }
+    <hr>
+    <h1 class="display-4">Escolha uma salada do dia</h1>
+    @if (Model.Saladas.Any())
+    {
+        @foreach (var item in Model.Saladas)
+        {
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="@item.Nome" name="example3">
+            <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
+          </div>
+        }
+    }else{
+      <h6>Não há salada cadastrada hoje! <a href="/Salada/Registro" class="btn btn-link">Cadastrar agora</a></h6>
+    }
+    <hr>    
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="switch1" name="example">
+      <label class="custom-control-label" for="switch1">Retirar no local</label>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Continuar</button>
+    <br>
+  </form>
+</div>
+
+
+@section Scripts {
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
