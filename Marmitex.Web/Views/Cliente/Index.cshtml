@@ -1,9 +1,24 @@
-
+@model Marmitex.Web.ViewModels.MarmitaViewModel
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
 
 <script>
+  $(document).keypress(function(e) {
+    if (e.which == 13) {
+      $('.celular').mask('(00) 0000-00009');        
+      $('.cep').mask('99999-999');
+      $('.cpf').mask('999.999.999-99');
+
+      var numero = document.getElementById('celular')
+
+      if(numero.value.length == 15){
+        $('.celular').mask('(00) 90000-0009');
+      }else{
+        $('.celular').mask('(00) 0000-00009');
+      }
+    }
+  });
     $(document).ready(function () {
         $('.celular').mask('(00) 0000-00009');        
         $('.cep').mask('99999-999');
@@ -24,8 +39,8 @@
   <form asp-controller="Cliente" asp-action="Index" method="POST">
     <div class="form-group">
       <label>Telefone/Celular:</label>
-      <input class="form-control celular" autofocus name="telefone" placeholder="Entre com o telefone ou celular">
-      <span class="text-danger"></span>
+      <input class="form-control celular" id="celular" asp-for="Numero" autofocus  placeholder="Entre com o telefone ou celular">
+      <span class="text-danger" asp-validation-for="Numero"></span>
     </div>
     <div class="row">
       <div class="col-lg-6">
@@ -47,3 +62,71 @@
     </div>
   }   
 </div>
+
+<!-- MENU DO DIA -->
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 mx-auto col-12 text-center mb-3">
+            <h1 class="mt-0 text-primary">Menu do dia</h1>            
+        </div>
+        <div class="col-12 mt-4">
+            <h3 class="text-center">Misturas</h3>
+            <hr class="accent my-5">
+        </div>
+        <div class="card-columns">
+            @if (Model.Misturas.Any())
+            {
+                foreach (var item in Model.Misturas)
+                {
+                    decimal valorTotal = 12 + (decimal)item.AcrescimoValor;
+                    <div class="card card-body">
+                        <span class="float-right font-weight-bold">R$ @valorTotal</span>
+                        <h6 class="text-truncate">@item.Nome</h6>                                  
+                        <span class="font-weight-bold small">acréscimo: R$@item.AcrescimoValor</span>                                   
+                    </div>
+                }
+            }else{
+                <h6>Não há misturas cadastradas hoje</h6>
+            }                        
+        </div>
+        <div class="col-12 mt-4">
+            <h3 class="text-center">Acompanhamentos</h3>
+            <hr class="accent my-5">
+        </div>
+        <div class="card-columns">
+            @if (Model.Acompanhamentos.Any())
+            {
+                foreach (var item in Model.Acompanhamentos)
+                {
+                    <div class="card card-body">
+                        <h6 class="text-truncate">@item.Nome</h6>
+                    </div>
+                }
+            }else{
+                <h6>Não há acompanhamentos cadastrados hoje</h6>
+            }                        
+        </div>
+        <div class="col-12 mt-4">
+            <h3 class="text-center">Saladas</h3>
+            <hr class="accent my-5">
+        </div>
+        <div class="card-columns">
+            @if (Model.Saladas.Any())
+            {
+                foreach (var item in Model.Saladas)
+                {
+                    <div class="card card-body">
+                        <h6 class="text-underline">@item.Nome</h6>
+                    </div>
+                }
+            }else{
+                <h6>Não há saladas cadastradas hoje</h6>
+            }                        
+        </div>      
+    </div>
+</div>
+
+@section Scripts {
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

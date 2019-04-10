@@ -51,10 +51,14 @@ namespace Marmitex.Data.Repositories
         {
             _context.Entry(obj).State = EntityState.Modified;
         }
-        public async void RemoveProdutoAntigo<T>() where T : Cardapio
+        public async Task RemoveProdutoAntigo<T>() where T : Cardapio
         {
-            _context.Set<T>().RemoveRange(_context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()));
-            await Save();
+            await Task.Run(() =>
+            {
+                _context.Set<T>().
+                RemoveRange(_context.Set<T>()
+                .Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()));
+            });
         }
     }
 }

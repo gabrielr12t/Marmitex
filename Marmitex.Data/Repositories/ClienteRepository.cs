@@ -11,8 +11,6 @@ namespace Marmitex.Data.Repositories
     {
         public ClienteRepository(ApplicationDbContext context) : base(context) { }
 
-        // Registro de cliente
-
         public override void Add(Cliente obj)
         {
             Cliente cliente = null;
@@ -30,7 +28,6 @@ namespace Marmitex.Data.Repositories
             cliente.Update(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa,
             obj.Telefone, obj.Celular, cliente.DataCadastro);
         }
-
 
         public IQueryable<Pedido> ClientePedidos(int id)
         {
@@ -52,7 +49,6 @@ namespace Marmitex.Data.Repositories
                 cliente.Celular = isCelular ? telefone : null;
                 cliente.Telefone = isTelefone ? telefone : null;
             }
-
             return cliente;
         }
     }

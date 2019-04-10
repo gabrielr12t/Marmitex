@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Marmitex.DI;
+using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
 using Marmitex.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
@@ -28,7 +29,7 @@ namespace Marmitex.Web
         //         .AddEnvironmentVariables();
         //     Configuration = builder.Build();
         // }
-        
+
         public Startup(IConfiguration configuration)
         {
 
@@ -73,9 +74,20 @@ namespace Marmitex.Web
                    await next.Invoke();
                    //Response
                    var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
+
+                   var removeMistura = (IRepositoryBase<Mistura>)context.RequestServices.GetService(typeof(IRepositoryBase<Mistura>));
+                   var removeSalada = (IRepositoryBase<Salada>)context.RequestServices.GetService(typeof(IRepositoryBase<Salada>));
+                   var removeAcompanhamento = (IRepositoryBase<Acompanhamento>)context.RequestServices.GetService(typeof(IRepositoryBase<Acompanhamento>));
+
+                   await removeAcompanhamento.RemoveProdutoAntigo<Acompanhamento>();
+                   await removeSalada.RemoveProdutoAntigo<Salada>();
+                   await removeMistura.RemoveProdutoAntigo<Mistura>();
                    await unitOfWork.Commit();
+
+
                }
             );
+
 
             // end save
 
@@ -98,7 +110,7 @@ namespace Marmitex.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Mistura}/{action=Registro}/{id?}");
+                    template: "{controller=Cliente}/{action=Index}/{id?}");
             });
         }
     }

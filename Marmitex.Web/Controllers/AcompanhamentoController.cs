@@ -18,7 +18,7 @@ namespace Marmitex.Web.Controllers
         {
             _cardapioRepository = cardapioRepository;
             _mapper = mapper;
-            _cardapioRepository.RemoveProdutoAntigo<Acompanhamento>();
+
         }
 
         [HttpGet]

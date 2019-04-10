@@ -13,6 +13,13 @@ namespace Marmitex.Data.Repositories
         public MarmitaRepository(ApplicationDbContext context) : base(context)
         {
         }
+
+
+        public override void Add(Marmita obj)
+        {
+            var marmita = new Marmita(obj.Salada, obj.Mistura, obj.Valor, obj.Tamanho, (List<Acompanhamento>)obj.Acompanhamentos);
+             _context.Marmitas.Add(marmita);
+        }
         public List<Marmita> Itens()
         {
             var itens = _context.Marmitas

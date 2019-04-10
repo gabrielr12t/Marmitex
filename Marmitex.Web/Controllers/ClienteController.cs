@@ -12,32 +12,49 @@ namespace Marmitex.Web.Controllers
 {
     public class ClienteController : Controller
     {
+        private readonly ISaladaRepository _saladaRepository;
+        private readonly IMisturaRepository _misturaRepository;
+        private readonly IAcompanhamentoRepository _acompanhamentoRepository;
         private readonly IClienteRepository _clienteRepository;
         private readonly IMapper _mapper;
-        public ClienteController(IClienteRepository clienteRepository, IMapper mapper)
+        public ClienteController(IClienteRepository clienteRepository, ISaladaRepository saladaRepository, IMisturaRepository misturaRepository,
+        IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper)
         {
+            _saladaRepository = saladaRepository;
+            _misturaRepository = misturaRepository;
+            _acompanhamentoRepository = acompanhamentoRepository;
             _clienteRepository = clienteRepository;
             _mapper = mapper;
         }
 
+        public MarmitaViewModel MarmitaViewModelDB()
+        {
+            var marmitaViewModel = new MarmitaViewModel
+            {
+                Saladas = _mapper.Map<List<SaladaViewModel>>(_saladaRepository.GetAll()),
+                Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.GetAll()),
+                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_acompanhamentoRepository.GetAll())
+            };
+            return marmitaViewModel;
+        }//---------------------
+
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            return View(MarmitaViewModelDB());
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Index(string telefone)
+        public IActionResult Index(MarmitaViewModel viewModel)
         {
-            if (string.IsNullOrEmpty(telefone))
-            {
-                ViewBag.Message = "Preencha o campo telefone";
-                return View();
+            if (string.IsNullOrEmpty(viewModel.Numero))
+            {                
+                ViewBag.Message = "Preencha o campo viewModel.Numero";
+                return View(MarmitaViewModelDB());
             }
-            var cliente = _clienteRepository.GetClienteByTelefone(telefone);
-            // return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = telefone }) : RedirectToAction(nameof(Listar));
-            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = telefone }) : RedirectToAction("Registro", "Marmita");
+            var cliente = _clienteRepository.GetClienteByTelefone(viewModel.Numero);
+            return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = viewModel.Numero }) : RedirectToAction("Registro", "Marmita", _mapper.Map<ClienteViewModel>(cliente));
         }
 
         [HttpGet]

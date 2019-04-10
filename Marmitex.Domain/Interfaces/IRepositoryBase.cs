@@ -13,6 +13,6 @@ namespace Marmitex.Domain.Interfaces
         void Update(TEntity obj);
         void Remove(TEntity obj);
         Task Save();
-        void RemoveProdutoAntigo<T>() where T : Cardapio;
+        Task RemoveProdutoAntigo<T>() where T : Cardapio;
     }
 }

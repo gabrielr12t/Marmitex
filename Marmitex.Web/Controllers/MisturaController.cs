@@ -23,9 +23,7 @@ namespace Marmitex.Web.Controllers
         [HttpGet]
         public IActionResult Registro(int id)
         {
-            //removendo misturas antigas
-             _misturaRepository.RemoveProdutoAntigo<Mistura>();
-             _misturaRepository.Save();
+            
             //get all misturas do dia
             var misturaViewModel = new MisturaViewModel();
             // -----------------------

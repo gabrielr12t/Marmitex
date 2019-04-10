@@ -6,59 +6,81 @@
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
 
 
+<!-- <div class="alert alert-danger">
+    <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action.
+</div> -->
+ 
 <div class="container">
   <p>Selecione os itens que o cliente pedir</p>
   <hr>
   <form asp-controller="Marmita" asp-action="Registro">
-    <h1 class="display-4">Escolha uma mistura do dia</h1>
+    <div asp-validation-summary="ModelOnly" class="text-danger">
+      <div class="alert alert-danger">
+        <strong>Erro!</strong> Ocorreu um erro durante a execução, tente novamente.
+      </div> 
+    </div>
+    <h3>Escolha uma mistura do dia</h3>
     @if (Model.Misturas.Any())
     {
         @foreach (var item in Model.Misturas)
         {
           <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="@item.Nome" name="example2">
-            <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
+            <input type="radio" class="custom-control-input" asp-for="Mistura" id="@item.Nome" value=@item.Id name="misturaId">            
+            <label class="custom-control-label" for="@item.Nome">@item.Nome</label>                        
           </div>
         }
+        
     }else{
-      <h6>Não há misturas cadastradas hoje! <a href="/Mistura/Registro" class="btn btn-link">Cadastrar agora</a></h6>
+      <h3>Não há misturas cadastradas hoje! <a href="/Mistura/Registro" class="btn btn-link">Cadastrar agora</a></h3>
     }
+    <span class="text-danger" asp-validation-for="Mistura"></span>
     <hr>
-    <h1 class="display-4">Escolha dois acompanhamentos do dia</h1>
+    <h3>Escolha dois acompanhamentos do dia</h3>
     @if (Model.Acompanhamentos.Any())
     {
         @foreach (var item in Model.Acompanhamentos)
         {
           <div class="custom-control custom-checkbox mb-3">
-            <input type="checkbox" class="custom-control-input acompanhamento" id="@item.Nome" name="example1">
+            <input type="checkbox" class="custom-control-input acompanhamento" id="@item.Nome" value=@item.Id name="selectAcompanhamentos">
             <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
           </div>
         }
     }else{
-      <h6>Não há acompanhamentos cadastrados hoje! <a href="/Acompanhamento/Registro" class="btn btn-link">Cadastrar agora</a></h6>
+      <h3>Não há acompanhamentos cadastrados hoje! <a href="/Acompanhamento/Registro" class="btn btn-link">Cadastrar agora</a></h3>
     }
     <hr>
-    <h1 class="display-4">Escolha uma salada do dia</h1>
+    <h3>Escolha uma salada do dia</h3>
     @if (Model.Saladas.Any())
     {
         @foreach (var item in Model.Saladas)
         {
           <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="@item.Nome" name="example3">
+            <input type="radio" class="custom-control-input" id="@item.Nome" value=@item.Id name="saladaId">
             <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
           </div>
         }
     }else{
-      <h6>Não há salada cadastrada hoje! <a href="/Salada/Registro" class="btn btn-link">Cadastrar agora</a></h6>
-    }
-    <hr>    
-    <div class="custom-control custom-switch">
-      <input type="checkbox" class="custom-control-input" id="switch1" name="example5">
-      <label class="custom-control-label" for="switch1">Retirar no local</label>
+      <h3>Não há salada cadastrada hoje! <a href="/Salada/Registro" class="btn btn-link">Cadastrar agora</a></h3>
+    }    
+    <hr>
+    <h3>Observações: </h3>
+    <div class="md-form mb-4 pink-textarea active-pink-textarea">
+      <textarea name="observacao"  placeholder="Ex: marmita com pouco feijão" class="md-textarea form-control" rows="3"></textarea>
     </div>
+    <hr>    
+    <div class="form-group">
+      <label>Sexo:</label>
+      <select asp-for="Tamanho" name="tamanho" class="form-control" asp-items="Html.GetEnumSelectList<Marmitex.Domain.Enums.Tamanho>()"></select>      
+      <span class="text-danger" asp-validation-for="Tamanho"></span>
+    </div>
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="switch1" name="entrega">
+      <label class="custom-control-label" for="switch1">Retirar no local</label>
+    </div>    
     <br>
     <button type="submit" class="btn btn-primary">Continuar</button>
     <br>
+    
   </form>
 </div>
 
