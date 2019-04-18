@@ -5,8 +5,11 @@ using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Enums;
 using Marmitex.Domain.Interfaces;
 using Marmitex.Web.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Marmitex.Web.Controllers
 {
@@ -18,7 +21,6 @@ namespace Marmitex.Web.Controllers
         private readonly IMisturaRepository _misturaRepository;
         private readonly IMarmitaRepository _marmitaRepository;
 
-
         public MarmitaController(IMarmitaRepository marmitaRepository, IMisturaRepository misturaRepository,
         ISaladaRepository saladaRepository, IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper)
         {
@@ -28,65 +30,64 @@ namespace Marmitex.Web.Controllers
             _misturaRepository = misturaRepository;
             _marmitaRepository = marmitaRepository;
         }
-
+        public string GetCookie(string cookie)
+        {
+            return Request.Cookies[cookie];
+        }
         //método para preencher classe
         public MarmitaViewModel MarmitaViewModelDB()
         {
             var marmitaViewModel = new MarmitaViewModel
             {
-                Saladas = _mapper.Map<List<SaladaViewModel>>(_saladaRepository.GetAll()),
-                Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.GetAll()),
-                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_acompanhamentoRepository.GetAll())
+                Saladas = _mapper.Map<List<SaladaViewModel>>(_saladaRepository.Ativos<Salada>()),
+                Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>()),
+                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_acompanhamentoRepository.Ativos<Acompanhamento>())
             };
             return marmitaViewModel;
         }//---------------------
 
 
-        [HttpGet]
-        public IActionResult Registro(ClienteViewModel clienteViewModel)
+        private IActionResult Adicionar(Marmita marmita)
         {
+            return View(MarmitaViewModelDB());
+            // return RedirectToAction(nameof(Registro));
+        }
+        private IActionResult Finalizar()
+        {
+            var cookie = GetCookie("carrinho");
+            var resultado = JsonConvert.DeserializeObject<List<ItensDoPedido>>(cookie);
+            // return View(nameof(Registro));
+            return View(MarmitaViewModelDB());
+        }
+        [HttpGet]
+        public IActionResult Registro(ClienteViewModel clienteViewModel = null)
+        {
+            //if (string.IsNullOrEmpty(clienteViewModel.Nome)) return RedirectToAction("Cadastro", "Cliente");
             return View(MarmitaViewModelDB());
         }
         [HttpPost]
-        public IActionResult Registro(int misturaId, int[] selectAcompanhamentos, int saladaId, Tamanho tamanho, string observacao, string entrega)
+        public IActionResult Registro(int misturaId, int[] selectAcompanhamentos, int saladaId, Tamanho tamanho, string observacao, string entrega, string btn)
         {
             try
             {
-                // arrumar esse código horroroso ********************************************
-                var acompanhamentos = new List<Acompanhamento>();
+                var acompanhamentos = _acompanhamentoRepository.GetByIds(selectAcompanhamentos);
                 var mistura = _misturaRepository.GetById(misturaId);
-                foreach (var item in selectAcompanhamentos)
+                Marmita marmita = new Marmita(mistura, acompanhamentos, saladaId, tamanho, observacao, entrega);
+                switch (btn)
                 {
-                    acompanhamentos.Add(_acompanhamentoRepository.GetById(item));
+                    case "Adicionar":
+                        return (Adicionar(marmita));
+                    case "Finalizar":
+                        return (Finalizar());
                 }
-                //******************************************************************** */
-
-                Marmita marmita = new Marmita
-                {
-                    Mistura = new Mistura
-                    {
-                        Id = mistura.Id,
-                        AcrescimoValor = mistura.AcrescimoValor,
-                        Nome = mistura.Nome
-                    },
-                    Salada = new Salada
-                    {
-                        Id = saladaId
-                    },
-                    Tamanho = tamanho,
-                    Observacao = observacao,
-                    Acompanhamentos = acompanhamentos
-                };
-                _marmitaRepository.Add(marmita);
                 return View(MarmitaViewModelDB());
             }
             catch (System.Exception e)
             {
                 // ModelState.AddModelError("", "Ocorreu um erro, tente novamente");
-                ModelState.AddModelError("","");
+                ModelState.AddModelError("", e.Message);
                 return View(MarmitaViewModelDB());
             }
-
         }
     }
 }

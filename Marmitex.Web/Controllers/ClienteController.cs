@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
+using Marmitex.Web.Services;
 using Marmitex.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,16 +33,19 @@ namespace Marmitex.Web.Controllers
         {
             var marmitaViewModel = new MarmitaViewModel
             {
-                Saladas = _mapper.Map<List<SaladaViewModel>>(_saladaRepository.GetAll()),
-                Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.GetAll()),
-                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_acompanhamentoRepository.GetAll())
+                Saladas = _mapper.Map<List<SaladaViewModel>>(_saladaRepository.Ativos<Salada>()),
+                Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>()),
+                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_acompanhamentoRepository.Ativos<Acompanhamento>())
             };
             return marmitaViewModel;
         }//---------------------
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            await _clienteRepository.RemoveProdutoAntigo<Mistura>();
+            await _clienteRepository.RemoveProdutoAntigo<Acompanhamento>();
+            await _clienteRepository.RemoveProdutoAntigo<Salada>();
             return View(MarmitaViewModelDB());
         }
 
@@ -49,8 +54,8 @@ namespace Marmitex.Web.Controllers
         public IActionResult Index(MarmitaViewModel viewModel)
         {
             if (string.IsNullOrEmpty(viewModel.Numero))
-            {                
-                ViewBag.Message = "Preencha o campo viewModel.Numero";
+            {
+                ViewBag.Message = "Preencha o campo número";
                 return View(MarmitaViewModelDB());
             }
             var cliente = _clienteRepository.GetClienteByTelefone(viewModel.Numero);
@@ -73,11 +78,13 @@ namespace Marmitex.Web.Controllers
                 var cliente = _mapper.Map<Cliente>(clienteViewModel);
                 _clienteRepository.Add(cliente);
                 ModelState.Clear();
-                return RedirectToAction(nameof(Listar));
+                return RedirectToAction("Registro", "Marmita", clienteViewModel);
             }
             catch (Exception e)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro: {e.Message} ");
+                ModelState.AddModelError("", $"erro: {e.Message} ");
+                return View(MarmitaViewModelDB());
+                //return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro: {e.Message} ");
             }
         }
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Marmitex.Data.Context;
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.Entidades;
+using Marmitex.Domain.Enums;
 using Marmitex.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,11 +40,13 @@ namespace Marmitex.Data.Repositories
         }
         public virtual void Remove(TEntity obj)
         {
-            var query = _context.Set<TEntity>().Where(e => e.Id == obj.Id);
-
-            if (query.Any()) _context.Set<TEntity>().Remove(obj);
+            // var query = _context.Set<TEntity>().Where(e => e.Id == obj.Id);
+            // if (query.Any()) _context.Set<TEntity>().Remove(obj);
+            var query = _context.Set<TEntity>().Find(obj.Id);
+            if (query != null) _context.Set<TEntity>().Remove(obj);
         }
-        public async Task Save()
+
+        public virtual async Task Save()
         {
             await _context.SaveChangesAsync();
         }
@@ -51,14 +54,28 @@ namespace Marmitex.Data.Repositories
         {
             _context.Entry(obj).State = EntityState.Modified;
         }
-        public async Task RemoveProdutoAntigo<T>() where T : Cardapio
+        public virtual async Task RemoveProdutoAntigo<T>() where T : Cardapio
         {
-            await Task.Run(() =>
-            {
-                _context.Set<T>().
-                RemoveRange(_context.Set<T>()
-                .Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()));
-            });
+            var itens = await _context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()).ToListAsync();
+            _context.Set<T>().RemoveRange(itens);
+            // await Save();
+        }
+        public virtual void Desativar<T>(TEntity obj) where T : Cardapio
+        {
+            var item = obj.Id > 0 ? _context.Set<T>().FirstOrDefault(e => e.Id == obj.Id) : null;
+            item.StatusCardapio = StatusCardapio.INATIVO;
+        }
+        IQueryable<T> IRepositoryBase<TEntity>.Ativos<T>()
+        {
+            var query = _context.Set<T>().Where(x => x.StatusCardapio.Equals(StatusCardapio.ATIVO) && x.Data.ToShortDateString().Equals(DateTime.Now.ToShortDateString()));
+            return query.AsQueryable().AsNoTracking();
+        }
+
+        public IQueryable<TEntity> GetByIds(int[] ids)
+        {
+            List<TEntity> lista = new List<TEntity>();
+            foreach (var item in ids) lista.Add(GetById(item));
+            return lista.AsQueryable().AsNoTracking();
         }
     }
 }

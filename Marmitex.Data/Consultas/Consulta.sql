@@ -1,3 +1,6 @@
-use Marmitex
 
-SELECT * FROM Marmitas
+ 
+
+
+ SELECT * from Misturas
+ 

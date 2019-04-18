@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marmitex.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190405190349_ConsertandoBanco")]
-    partial class ConsertandoBanco
+    [Migration("20190415034905_AddStatusCardapio")]
+    partial class AddStatusCardapio
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,8 @@ namespace Marmitex.Data.Migrations
                     b.Property<long?>("MarmitaId");
 
                     b.Property<string>("Nome");
+
+                    b.Property<int>("StatusCardapio");
 
                     b.HasKey("Id");
 
@@ -100,6 +102,8 @@ namespace Marmitex.Data.Migrations
 
                     b.Property<long?>("MisturaId");
 
+                    b.Property<string>("Observacao");
+
                     b.Property<long?>("SaladaId");
 
                     b.Property<int>("Tamanho");
@@ -115,6 +119,25 @@ namespace Marmitex.Data.Migrations
                     b.ToTable("Marmitas");
                 });
 
+            modelBuilder.Entity("Marmitex.Domain.Entidades.MarmitaAcompanhamento", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long?>("AcompanhamentoId");
+
+                    b.Property<long?>("MarmitaId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AcompanhamentoId");
+
+                    b.HasIndex("MarmitaId");
+
+                    b.ToTable("MarmitaAcompanhamentos");
+                });
+
             modelBuilder.Entity("Marmitex.Domain.Entidades.Mistura", b =>
                 {
                     b.Property<long>("Id")
@@ -125,9 +148,15 @@ namespace Marmitex.Data.Migrations
 
                     b.Property<DateTime>("Data");
 
+                    b.Property<long?>("MarmitaId");
+
                     b.Property<string>("Nome");
 
+                    b.Property<int>("StatusCardapio");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("MarmitaId");
 
                     b.ToTable("Misturas");
                 });
@@ -141,6 +170,10 @@ namespace Marmitex.Data.Migrations
                     b.Property<long?>("ClienteId");
 
                     b.Property<DateTime>("Data");
+
+                    b.Property<int>("OpcaoEntrega");
+
+                    b.Property<int>("OpcaoPagamento");
 
                     b.Property<decimal>("Total");
 
@@ -159,9 +192,15 @@ namespace Marmitex.Data.Migrations
 
                     b.Property<DateTime>("Data");
 
+                    b.Property<long?>("MarmitaId");
+
                     b.Property<string>("Nome");
 
+                    b.Property<int>("StatusCardapio");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("MarmitaId");
 
                     b.ToTable("Saladas");
                 });
@@ -195,11 +234,36 @@ namespace Marmitex.Data.Migrations
                         .HasForeignKey("SaladaId");
                 });
 
+            modelBuilder.Entity("Marmitex.Domain.Entidades.MarmitaAcompanhamento", b =>
+                {
+                    b.HasOne("Marmitex.Domain.Entidades.Acompanhamento", "Acompanhamento")
+                        .WithMany()
+                        .HasForeignKey("AcompanhamentoId");
+
+                    b.HasOne("Marmitex.Domain.Entidades.Marmita", "Marmita")
+                        .WithMany()
+                        .HasForeignKey("MarmitaId");
+                });
+
+            modelBuilder.Entity("Marmitex.Domain.Entidades.Mistura", b =>
+                {
+                    b.HasOne("Marmitex.Domain.Entidades.Marmita")
+                        .WithMany("Misturas")
+                        .HasForeignKey("MarmitaId");
+                });
+
             modelBuilder.Entity("Marmitex.Domain.Entidades.Pedido", b =>
                 {
                     b.HasOne("Marmitex.Domain.Entidades.Cliente", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClienteId");
+                });
+
+            modelBuilder.Entity("Marmitex.Domain.Entidades.Salada", b =>
+                {
+                    b.HasOne("Marmitex.Domain.Entidades.Marmita")
+                        .WithMany("Saladas")
+                        .HasForeignKey("MarmitaId");
                 });
 #pragma warning restore 612, 618
         }

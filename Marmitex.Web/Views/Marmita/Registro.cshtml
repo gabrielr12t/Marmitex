@@ -1,8 +1,8 @@
 @model Marmitex.Web.ViewModels.MarmitaViewModel
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
 
 
@@ -22,36 +22,42 @@
     <h3>Escolha uma mistura do dia</h3>
     @if (Model.Misturas.Any())
     {
-        @foreach (var item in Model.Misturas)
-        {
-          <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" asp-for="Mistura" id="@item.Nome" value=@item.Id name="misturaId">            
-            <label class="custom-control-label" for="@item.Nome">@item.Nome</label>                        
-          </div>
-        }
-        
+      @foreach (var item in Model.Misturas)
+      {
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" class="custom-control-input" asp-for="Mistura" id="@item.Nome" value=@item.Id name="misturaId">            
+          <label class="custom-control-label" for="@item.Nome">@item.Nome</label>                        
+        </div>
+      }
     }else{
-      <h3>Não há misturas cadastradas hoje! <a href="/Mistura/Registro" class="btn btn-link">Cadastrar agora</a></h3>
+      <div class="alert alert-warning">
+        <strong>Opa!</strong> Não há misturas cadastradas hoje!
+        <a href="/Mistura/Registro" class="btn btn-link">Cadastrar agora</a>
+      </div> 
     }
-    <span class="text-danger" asp-validation-for="Mistura"></span>
+    <span class="text-danger" id="MisturaErro" asp-validation-for="Mistura"></span>
     <hr>
     <h3>Escolha dois acompanhamentos do dia</h3>
     @if (Model.Acompanhamentos.Any())
     {
-        @foreach (var item in Model.Acompanhamentos)
-        {
-          <div class="custom-control custom-checkbox mb-3">
-            <input type="checkbox" class="custom-control-input acompanhamento" id="@item.Nome" value=@item.Id name="selectAcompanhamentos">
-            <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
-          </div>
-        }
+      @foreach (var item in Model.Acompanhamentos)
+      {
+        <div class="custom-control custom-checkbox mb-3">
+          <input type="checkbox" class="custom-control-input acompanhamento" id="@item.Nome" value=@item.Id name="selectAcompanhamentos">
+          <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
+        </div>
+      }
     }else{
-      <h3>Não há acompanhamentos cadastrados hoje! <a href="/Acompanhamento/Registro" class="btn btn-link">Cadastrar agora</a></h3>
+      <div class="alert alert-warning">
+        <strong>Opa!</strong> Não há acompanhamentos cadastrados hoje!
+        <a href="/Acompanhamento/Registro" class="btn btn-link">Cadastrar agora</a>
+      </div>      
     }
     <hr>
     <h3>Escolha uma salada do dia</h3>
     @if (Model.Saladas.Any())
     {
+      <div id="radios">
         @foreach (var item in Model.Saladas)
         {
           <div class="custom-control custom-radio custom-control-inline">
@@ -59,18 +65,23 @@
             <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
           </div>
         }
+      </div>
     }else{
-      <h3>Não há salada cadastrada hoje! <a href="/Salada/Registro" class="btn btn-link">Cadastrar agora</a></h3>
-    }    
+      <div class="alert alert-warning">
+        <strong>Opa!</strong> Não há salada cadastrada hoje!
+        <a href="/Salada/Registro" class="btn btn-link">Cadastrar agora</a>
+      </div>      
+    }
+        
     <hr>
     <h3>Observações: </h3>
     <div class="md-form mb-4 pink-textarea active-pink-textarea">
-      <textarea name="observacao"  placeholder="Ex: marmita com pouco feijão" class="md-textarea form-control" rows="3"></textarea>
+      <textarea name="observacao" id="obs"  placeholder="Ex: marmita com pouco feijão" class="md-textarea form-control" rows="3"></textarea>
     </div>
     <hr>    
     <div class="form-group">
       <label>Sexo:</label>
-      <select asp-for="Tamanho" name="tamanho" class="form-control" asp-items="Html.GetEnumSelectList<Marmitex.Domain.Enums.Tamanho>()"></select>      
+      <select asp-for="Tamanho" name="tamanho" class="form-control" id="tamanho" asp-items="Html.GetEnumSelectList<Marmitex.Domain.Enums.Tamanho>()"></select>      
       <span class="text-danger" asp-validation-for="Tamanho"></span>
     </div>
     <div class="custom-control custom-switch">
@@ -78,9 +89,10 @@
       <label class="custom-control-label" for="switch1">Retirar no local</label>
     </div>    
     <br>
-    <button type="submit" class="btn btn-primary">Continuar</button>
+    <!-- <button type="submit" name="btn" value="Adicionar" class="btn btn-primary">Adicionar</button> -->
+    <a href="#"  onclick="AddCarrinho();">Adicionar</a>
+    <button type="submit" name="btn" value="Finalizar" class="btn btn-success">Finalizar</button>
     <br>
-    
   </form>
 </div>
 
@@ -88,6 +100,9 @@
 @section Scripts {
   @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
 <script src="~/js/Marmita/Registro.js"></script>
+
  

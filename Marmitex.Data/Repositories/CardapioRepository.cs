@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Marmitex.Data.Context;
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.Entidades;
@@ -14,9 +17,9 @@ namespace Marmitex.Data.Repositories
         public void AddCardapio(T t)
         {
             var exist = GetById(t.Id);
-            var obj = typeof(T);
+            var obj = typeof(T);    
             Salada salada = null;
-            Acompanhamento acompanhamento = null;            
+            Acompanhamento acompanhamento = null;
             if (exist == null)
             {
                 if (obj.Equals(typeof(Salada)))
@@ -34,7 +37,16 @@ namespace Marmitex.Data.Repositories
             }
             //update;
             exist.Nome = t.Nome;
-
         }
+
+        // public async Task RemoveProdutoAntigo(T t)
+        // {
+        //     var itens  = await _context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()).ToListAsync();
+        //     await Task.Run(() =>
+        //     {                
+        //         _context.Set<T>().RemoveRange(itens);
+        //     });
+
+        // }
     }
 }

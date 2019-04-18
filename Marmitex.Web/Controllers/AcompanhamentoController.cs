@@ -19,6 +19,7 @@ namespace Marmitex.Web.Controllers
             _cardapioRepository = cardapioRepository;
             _mapper = mapper;
 
+
         }
 
         [HttpGet]
@@ -27,7 +28,7 @@ namespace Marmitex.Web.Controllers
             var acompanhamentoViewModel = new AcompanhamentoViewModel();
             var acompanhamento = _cardapioRepository.GetById(id);
             if (acompanhamento != null) acompanhamentoViewModel = _mapper.Map<AcompanhamentoViewModel>(acompanhamento);
-            acompanhamentoViewModel.Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_cardapioRepository.GetAll());
+            acompanhamentoViewModel.Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_cardapioRepository.Ativos<Acompanhamento>());
             return View(acompanhamentoViewModel);
         }
         [HttpPost]
@@ -38,7 +39,7 @@ namespace Marmitex.Web.Controllers
                 _cardapioRepository.Add(_mapper.Map<Acompanhamento>(acompanhamentoViewModel));
                 await _cardapioRepository.Save();
 
-                var AcompanhamentoMapper = _mapper.Map<List<AcompanhamentoViewModel>>(_cardapioRepository.GetAll());
+                var AcompanhamentoMapper = _mapper.Map<List<AcompanhamentoViewModel>>(_cardapioRepository.Ativos<Acompanhamento>());
                 acompanhamentoViewModel = new AcompanhamentoViewModel { Acompanhamentos = AcompanhamentoMapper };
                 ModelState.Clear();
                 return View(acompanhamentoViewModel);
@@ -54,7 +55,7 @@ namespace Marmitex.Web.Controllers
         {
             ModelState.Clear();
             var acompanhamento = _cardapioRepository.GetById(Id);
-            if (acompanhamento != null) _cardapioRepository.Remove(acompanhamento);
+            if (acompanhamento != null) _cardapioRepository.Desativar<Acompanhamento>(acompanhamento);
             return RedirectToAction(nameof(Registro));
         }
     }

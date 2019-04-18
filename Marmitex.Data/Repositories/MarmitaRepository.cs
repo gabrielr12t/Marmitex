@@ -15,11 +15,19 @@ namespace Marmitex.Data.Repositories
         }
 
 
-        public override void Add(Marmita obj)
+        public async Task AddMarmita(Marmita obj, IEnumerable<Acompanhamento> Acompanhamentos)
         {
-            var marmita = new Marmita(obj.Salada, obj.Mistura, obj.Valor, obj.Tamanho, (List<Acompanhamento>)obj.Acompanhamentos);
-             _context.Marmitas.Add(marmita);
+            try
+            {
+                await _context.Marmitas.AddAsync(new Marmita(obj.Salada, obj.Mistura, obj.Valor, obj.Tamanho, (List<Acompanhamento>)obj.Acompanhamentos));
+                await _context.MarmitaAcompanhamentos.AddRangeAsync(new List<MarmitaAcompanhamento>().Select(m => m));
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
         }
+
         public List<Marmita> Itens()
         {
             var itens = _context.Marmitas
@@ -29,5 +37,7 @@ namespace Marmitex.Data.Repositories
                 .AsNoTracking();
             return itens.ToList();
         }
+
+
     }
 }

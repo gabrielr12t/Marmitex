@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Marmitex.Web.Controllers
 {
-   public class MisturaController : Controller
+    public class MisturaController : Controller
     {
         private readonly IMisturaRepository _misturaRepository;
         private readonly IMapper _mapper;
@@ -23,14 +23,14 @@ namespace Marmitex.Web.Controllers
         [HttpGet]
         public IActionResult Registro(int id)
         {
-            
+
             //get all misturas do dia
             var misturaViewModel = new MisturaViewModel();
             // -----------------------
             var mistura = _misturaRepository.GetById(id);
             if (mistura != null) misturaViewModel = _mapper.Map<MisturaViewModel>(mistura);
             //atribuindo misturas do dia a viewModel
-            misturaViewModel.Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.GetAll());//list de misturas para viewModel
+            misturaViewModel.Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>());//list de misturas para viewModel
             // ModelState.Clear();
             return View(misturaViewModel);
 
@@ -44,7 +44,7 @@ namespace Marmitex.Web.Controllers
                 _misturaRepository.Add(_mapper.Map<Mistura>(misturaViewModel));
                 await _misturaRepository.Save();
                 //Get all misturas do dia
-                var MisturaMapper = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.GetAll());//list de misturas para viewModel
+                var MisturaMapper = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>());//list de misturas para viewModel
 
                 misturaViewModel = new MisturaViewModel { Misturas = MisturaMapper };
                 // -----------------------------                
@@ -60,11 +60,11 @@ namespace Marmitex.Web.Controllers
         }
 
 
-        public IActionResult Delete(int Id)
+        public IActionResult Desativar(int Id)
         {
             ModelState.Clear();
             var mistura = _misturaRepository.GetById(Id);
-            if (mistura != null) _misturaRepository.Remove(mistura);
+            if (mistura != null) _misturaRepository.Desativar<Mistura>(mistura);
             //await _misturaRepository.Save();
             return RedirectToAction(nameof(Registro));
         }

@@ -1,5 +1,6 @@
 using System;
 using Marmitex.Domain.BaseEntity;
+using Marmitex.Domain.Enums;
 
 namespace Marmitex.Domain.Entidades
 {
@@ -21,6 +22,7 @@ namespace Marmitex.Domain.Entidades
             this.Nome = nome;
             this.AcrescimoValor = acrescimoValor;
             this.Data = this.Id > 0 ? data : DateTime.Now;
+            this.StatusCardapio = StatusCardapio.ATIVO;
         }
 
         public void Update(string nome, decimal acrescimoValor, DateTime data)

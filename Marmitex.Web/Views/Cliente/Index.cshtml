@@ -71,8 +71,8 @@
             <h1 class="mt-0 text-primary">Menu do dia</h1>            
         </div>
         <div class="col-12 mt-4">
-            <h3 class="text-center">Misturas</h3>
-            <hr class="accent my-5">
+          <hr class="accent my-5">
+          <h3 class="text-center">Misturas</h3>      
         </div>
         <div class="card-columns">
             @if (Model.Misturas.Any())
@@ -87,12 +87,12 @@
                     </div>
                 }
             }else{
-                <h6>Não há misturas cadastradas hoje</h6>
+                <h6>Não há misturas cadastradas hoje</h6><a href="/Mistura/Registro">cadastrar agora</a>
             }                        
         </div>
         <div class="col-12 mt-4">
-            <h3 class="text-center">Acompanhamentos</h3>
-            <hr class="accent my-5">
+          <hr class="accent my-5">
+          <h3 class="text-center">Acompanhamentos</h3>            
         </div>
         <div class="card-columns">
             @if (Model.Acompanhamentos.Any())
@@ -104,12 +104,12 @@
                     </div>
                 }
             }else{
-                <h6>Não há acompanhamentos cadastrados hoje</h6>
+                <h6>Não há acompanhamentos cadastrados hoje</h6><a href="/Acompanhamento/Registro">cadastrar agora</a>
             }                        
         </div>
         <div class="col-12 mt-4">
-            <h3 class="text-center">Saladas</h3>
-            <hr class="accent my-5">
+          <hr class="accent my-5">
+          <h3 class="text-center">Saladas</h3>            
         </div>
         <div class="card-columns">
             @if (Model.Saladas.Any())
@@ -121,7 +121,7 @@
                     </div>
                 }
             }else{
-                <h6>Não há saladas cadastradas hoje</h6>
+                <h6>Não há saladas cadastradas hoje</h6><a href="/Salada/Registro">cadastrar agora</a>
             }                        
         </div>      
     </div>

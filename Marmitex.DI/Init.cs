@@ -1,6 +1,7 @@
 using Marmitex.Data.Context;
 using Marmitex.Data.Repositories;
 using Marmitex.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +22,10 @@ namespace Marmitex.DI
             services.AddScoped(typeof(IMisturaRepository), typeof(MisturaRepository));
             services.AddScoped(typeof(IPedidoRepository), typeof(PedidoRepository));
             services.AddScoped(typeof(ISaladaRepository), typeof(SaladaRepository));
+            // services.AddScoped(typeof(IHttpContextAccessor), typeof(HttpContextAccessor));
+            services.AddHttpContextAccessor();
             services.AddScoped(typeof(ICardapioRepository<>), typeof(CardapioRepository<>));
+            services.AddDbContext<ApplicationDbContext>(ServiceLifetime.Transient);
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
         }

@@ -20,7 +20,7 @@ namespace Marmitex.Data.Repositories
                 //create
                 cliente = new Cliente(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua,
                 obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular, DateTime.Now);
-                _context.Clientes.Add(cliente);
+               _context.Clientes.Add(cliente);
                 return;
             }
             //update    

@@ -13,5 +13,10 @@ namespace Marmitex.Data.Context
         public DbSet<Mistura> Misturas { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<Salada> Saladas { get; set; }
+        public DbSet<MarmitaAcompanhamento> MarmitaAcompanhamentos { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

@@ -20,13 +20,17 @@ namespace Marmitex.Web.Helpers
 
             CreateMap<SaladaViewModel, Salada>().ReverseMap();
 
+            CreateMap<Marmita, MarmitaAcompanhamento>()            
+            .ForMember(ma => ma.Acompanhamento, conf => conf.MapFrom(m => m.Acompanhamentos))
+            .ForMember(ma => ma.Marmita, conf => conf.MapFrom(m => m));
+
             // CreateMap<MarmitaViewModel, Marmita>().ReverseMap();
 
             CreateMap<Marmita, MarmitaViewModel>()
             .ForMember(vm => vm.MisturaId, conf => conf.MapFrom(m => m.Mistura.Id))
             .ForMember(vm => vm.SaladaId, conf => conf.MapFrom(m => m.Salada.Id))
             .ForMember(vm => vm.TamanhoId, conf => conf.MapFrom(m => m.Tamanho))
-            .ForMember(vm => vm.Marmitas, conf => conf.MapFrom(m => m));            
+            .ForMember(vm => vm.Marmitas, conf => conf.MapFrom(m => m));
 
 
             // CreateMap<Marmita, MarmitaViewModel>()

@@ -21,14 +21,37 @@ namespace Marmitex.Domain.Entidades
         public virtual IEnumerable<Mistura> Misturas { get; set; }
         public virtual IEnumerable<Acompanhamento> Acompanhamentos { get; set; }
         // public virtual IEnumerable<Tamanho> Tamanhos { get; set; }
+
+
+         
+
+
         public Marmita() { Acompanhamentos = new List<Acompanhamento>(2); }
         public Marmita(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, List<Acompanhamento> acompanhamentos)
         {
             Mistura = new Mistura();
             Salada = new Salada();
-            
+
             Acompanhamentos = new List<Acompanhamento>(2);
             SetProperties(salada, mistura, valor, tamanho, acompanhamentos);
+        }
+
+        public Marmita(Mistura mistura, IQueryable<Acompanhamento> acompanhamentos, int saladaId, Tamanho tamanho, string obs, string entrega)
+        {
+            Mistura = new Mistura
+            {
+                Id = mistura.Id,
+                AcrescimoValor = mistura.AcrescimoValor,
+                Nome = mistura.Nome
+            };
+            Salada = new Salada
+            {
+                Id = saladaId
+            };
+            Tamanho = tamanho;
+            Observacao = obs;
+            Acompanhamentos = acompanhamentos;
+
         }
 
         private void SetProperties(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, List<Acompanhamento> acompanhamentos)

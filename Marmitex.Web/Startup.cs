@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Marmitex.DI;
+using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
 using Marmitex.Web.Helpers;
@@ -32,9 +33,10 @@ namespace Marmitex.Web
 
         public Startup(IConfiguration configuration)
         {
-
             Configuration = configuration;
         }
+
+
 
         public IConfiguration Configuration { get; }
 
@@ -50,7 +52,7 @@ namespace Marmitex.Web
 
             Init.ConfigureServices(services, Configuration.GetConnectionString("DefaultConnection"));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //
             var config = new AutoMapper.MapperConfiguration(cfg =>
@@ -59,8 +61,10 @@ namespace Marmitex.Web
             });
             var mapper = config.CreateMapper();
             services.AddSingleton(mapper);
-            //
+
             services.AddAutoMapper();
+
+            //
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,22 +77,14 @@ namespace Marmitex.Web
                    //Request
                    await next.Invoke();
                    //Response
+                   //var item = (ICardapioRepository<object>)context.RequestServices.GetService(typeof(ICardapioRepository<object>));
+
                    var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
-
-                   var removeMistura = (IRepositoryBase<Mistura>)context.RequestServices.GetService(typeof(IRepositoryBase<Mistura>));
-                   var removeSalada = (IRepositoryBase<Salada>)context.RequestServices.GetService(typeof(IRepositoryBase<Salada>));
-                   var removeAcompanhamento = (IRepositoryBase<Acompanhamento>)context.RequestServices.GetService(typeof(IRepositoryBase<Acompanhamento>));
-
-                   await removeAcompanhamento.RemoveProdutoAntigo<Acompanhamento>();
-                   await removeSalada.RemoveProdutoAntigo<Salada>();
-                   await removeMistura.RemoveProdutoAntigo<Mistura>();
+                   //    await item.RemoveProdutoAntigo();
                    await unitOfWork.Commit();
-
 
                }
             );
-
-
             // end save
 
             if (env.IsDevelopment())
@@ -101,17 +97,17 @@ namespace Marmitex.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //app.UseCookiePolicy();
-
+             
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Cliente}/{action=Index}/{id?}");
             });
+
+             
         }
     }
 }
