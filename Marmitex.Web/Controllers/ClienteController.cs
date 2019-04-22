@@ -65,8 +65,17 @@ namespace Marmitex.Web.Controllers
         [HttpGet]
         public IActionResult Cadastro(int id, string numero = null)
         {
-            var cliente = id > 0 ? _clienteRepository.GetById(id) : ((!string.IsNullOrEmpty(numero)) ? _clienteRepository.GetClienteByTelefone(numero) : new Cliente());
-            return View(_mapper.Map<ClienteViewModel>(cliente));
+            try
+            {
+                var cliente = id > 0 ? _clienteRepository.GetById(id) : ((!string.IsNullOrEmpty(numero)) ? _clienteRepository.GetClienteByTelefone(numero) : new Cliente());
+                return View(_mapper.Map<ClienteViewModel>(cliente));
+            }
+            catch (System.Exception e)
+            {
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View();
+            }
+
         }
 
         [HttpPost]
@@ -82,9 +91,8 @@ namespace Marmitex.Web.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("", $"erro: {e.Message} ");
-                return View(MarmitaViewModelDB());
-                //return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro: {e.Message} ");
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View();
             }
         }
 

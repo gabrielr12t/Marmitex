@@ -10,7 +10,6 @@ namespace Marmitex.Data.Repositories
     public class ClienteRepository : RepositoryBase<Cliente>, IClienteRepository
     {
         public ClienteRepository(ApplicationDbContext context) : base(context) { }
-
         public override void Add(Cliente obj)
         {
             Cliente cliente = null;
@@ -20,7 +19,7 @@ namespace Marmitex.Data.Repositories
                 //create
                 cliente = new Cliente(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua,
                 obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular, DateTime.Now);
-               _context.Clientes.Add(cliente);
+                _context.Clientes.Add(cliente);
                 return;
             }
             //update    
@@ -39,7 +38,7 @@ namespace Marmitex.Data.Repositories
         {
             bool isCelular = telefone != null && telefone.Length == 15;
             bool isTelefone = telefone != null && telefone.Length == 14;
-            bool telefoneIsValid = !string.IsNullOrEmpty(telefone) && (isCelular || isTelefone);            
+            bool telefoneIsValid = !string.IsNullOrEmpty(telefone) && (isCelular || isTelefone);
 
             var cliente = telefoneIsValid ? _context.Set<Cliente>().FirstOrDefault(c => c.Telefone.Equals(telefone.Trim()) || c.Celular.Equals(telefone.Trim())) : null;
 

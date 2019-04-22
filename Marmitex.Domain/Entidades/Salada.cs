@@ -1,5 +1,6 @@
 using System;
 using Marmitex.Domain.BaseEntity;
+using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
 
 namespace Marmitex.Domain.Entidades
@@ -12,19 +13,20 @@ namespace Marmitex.Domain.Entidades
         }
         public Salada(string nome, DateTime data)
         {
-            SetProperties(nome, data);
+            SetPropertiesAndValidateNome(nome, data);
         }
-
-        private void SetProperties(string nome, DateTime data)
+        public void Update(string nome, DateTime data)
         {
+            SetPropertiesAndValidateNome(nome, data);
+        }
+        private void SetPropertiesAndValidateNome(string nome, DateTime data)
+        {
+            DomainException.When(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
             this.Nome = nome;
             this.Data = this.Id > 0 ? data : DateTime.Now;
             this.StatusCardapio = StatusCardapio.ATIVO;
         }
 
-        public void Update(string nome, DateTime data)
-        {
-            SetProperties(nome, data);
-        }
+
     }
 }

@@ -16,7 +16,8 @@
 <div class="container">
   <h2>Registro de cliente</h2><a href="/Cliente/Listar">Lista de clientes</a><br/>
   <form asp-controller="Cliente" asp-action="Registro" method="POST">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"> 
+     </div>
     <input type="hidden" asp-for="Id" >
     <div class="form-group">
       <label>Nome:</label>

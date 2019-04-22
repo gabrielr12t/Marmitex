@@ -1,4 +1,5 @@
 using Marmitex.Domain.BaseEntity;
+using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,6 @@ namespace Marmitex.Domain.Entidades
         public virtual IEnumerable<Acompanhamento> Acompanhamentos { get; set; }
         // public virtual IEnumerable<Tamanho> Tamanhos { get; set; }
 
-
-         
-
-
         public Marmita() { Acompanhamentos = new List<Acompanhamento>(2); }
         public Marmita(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, List<Acompanhamento> acompanhamentos)
         {
@@ -33,8 +30,11 @@ namespace Marmitex.Domain.Entidades
             Salada = new Salada();
 
             Acompanhamentos = new List<Acompanhamento>(2);
+
+            ValidateProperties(mistura);
             SetProperties(salada, mistura, valor, tamanho, acompanhamentos);
         }
+
 
         public Marmita(Mistura mistura, IQueryable<Acompanhamento> acompanhamentos, int saladaId, Tamanho tamanho, string obs, string entrega)
         {
@@ -51,18 +51,21 @@ namespace Marmitex.Domain.Entidades
             Tamanho = tamanho;
             Observacao = obs;
             Acompanhamentos = acompanhamentos;
+            ValidateProperties(mistura);
+
 
         }
 
+        private void ValidateProperties(Mistura mistura)
+        {
+            DomainException.When(mistura == null, "Campo nome é obrigatório");
+        }
         private void SetProperties(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, List<Acompanhamento> acompanhamentos)
         {
             // mini = 12 reais 
             // normal = 14 reais
             this.Valor = tamanho == Tamanho.Mini ? 12 : 14;
-            if (mistura.AcrescimoValor > 0)
-            {
-                this.Valor += mistura.AcrescimoValor;
-            }
+            if (mistura.AcrescimoValor > 0) this.Valor += mistura.AcrescimoValor;
             this.Salada.Id = salada.Id;
             this.Mistura.Id = mistura.Id;
             this.Tamanho = tamanho;

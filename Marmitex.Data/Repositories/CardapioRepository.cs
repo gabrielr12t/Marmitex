@@ -11,13 +11,11 @@ namespace Marmitex.Data.Repositories
 {
     public class CardapioRepository<T> : RepositoryBase<T>, ICardapioRepository<T> where T : Cardapio
     {
-        public CardapioRepository(ApplicationDbContext context) : base(context)
-        {
-        }
+        public CardapioRepository(ApplicationDbContext context) : base(context) { }
         public void AddCardapio(T t)
         {
             var exist = GetById(t.Id);
-            var obj = typeof(T);    
+            var obj = typeof(T);
             Salada salada = null;
             Acompanhamento acompanhamento = null;
             if (exist == null)
@@ -39,14 +37,5 @@ namespace Marmitex.Data.Repositories
             exist.Nome = t.Nome;
         }
 
-        // public async Task RemoveProdutoAntigo(T t)
-        // {
-        //     var itens  = await _context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()).ToListAsync();
-        //     await Task.Run(() =>
-        //     {                
-        //         _context.Set<T>().RemoveRange(itens);
-        //     });
-
-        // }
     }
 }

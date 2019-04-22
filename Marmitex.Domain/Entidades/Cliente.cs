@@ -1,5 +1,6 @@
 using System;
 using Marmitex.Domain.BaseEntity;
+using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
 
 namespace Marmitex.Domain.Entidades
@@ -18,12 +19,10 @@ namespace Marmitex.Domain.Entidades
         public string Celular { get; set; }
         public DateTime DataCadastro { get; private set; }
 
-        public Cliente()
-        {
-
-        }
+        public Cliente() { }
         public Cliente(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
         {
+            ValidationProperties(nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular);
             SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
         }
         public void Update(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
@@ -31,12 +30,23 @@ namespace Marmitex.Domain.Entidades
             SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
         }
 
+        private void ValidationProperties(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular)
+        {
+            DomainException.When(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
+            DomainException.When(string.IsNullOrEmpty(sexo.ToString()), "Escolha uma opção de sexo");
+            DomainException.When(string.IsNullOrEmpty(rua), "O campo rua é obrigatório");
+            DomainException.When(ruaNumero <= 0, "O campo número da rua é obrigatório");
+            DomainException.When(string.IsNullOrEmpty(bairro), "O campo bairro é obrigatório");
+            DomainException.When(string.IsNullOrEmpty(numeroCasa), "O campo número da casa é obrigatório");
+            DomainException.When(string.IsNullOrEmpty(telefone), "O campo telefone é obrigatório");
+            DomainException.When(telefone.Length != 14, "Telefone inválido");
+            if (celular != null && celular.Length > 0) DomainException.When(celular.Length != 15, "Celular inválido");
+        }
+
         private void SetProperties(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
         {
             this.DataCadastro = dataCadastro;
-            if (id == 0)
-                DataCadastro = DateTime.Now;
-
+            if (id == 0) DataCadastro = DateTime.Now;
             this.Id = id;
             this.Nome = nome.Trim();
             this.Sobrenome = !string.IsNullOrEmpty(sobrenome) ? sobrenome.Trim() : null;

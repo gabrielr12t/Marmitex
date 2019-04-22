@@ -1,6 +1,8 @@
 @model Marmitex.Web.ViewModels.MarmitaViewModel
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 
 
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
@@ -9,6 +11,17 @@
 <!-- <div class="alert alert-danger">
     <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action.
 </div> -->
+
+<style>
+  .linha-vertical {
+    height: auto;/*Altura da linha*/
+    border-left: 0.3px solid;/* Adiciona borda esquerda na div como ser fosse uma linha.*/
+  }
+
+  .espaco-input{
+    margin-left: 10px;
+  }
+</style>
  
 <div class="container">
   <p>Selecione os itens que o cliente pedir</p>
@@ -24,10 +37,11 @@
     {
       @foreach (var item in Model.Misturas)
       {
-        <div class="custom-control custom-radio custom-control-inline">
-          <input type="radio" class="custom-control-input" asp-for="Mistura" id="@item.Nome" value=@item.Id name="misturaId">            
-          <label class="custom-control-label" for="@item.Nome">@item.Nome</label>                        
+        <div class="custom-control linha-vertical custom-radio custom-control-inline">
+          <input acrescimo="@item.AcrescimoValor" type="radio" class="custom-control-input " asp-for="Mistura" id="@item.Nome" value=@item.Id name="misturaId">            
+          <label class="custom-control-label espaco-input" for="@item.Nome">@item.Nome</label>                        
         </div>
+        <label id="ValorAcrescimo"><b><i class="fa fa-plus"></i> R$</b> @item.AcrescimoValor</label>
       }
     }else{
       <div class="alert alert-warning">
@@ -80,7 +94,7 @@
     </div>
     <hr>    
     <div class="form-group">
-      <label>Sexo:</label>
+      <label>Tamanho:</label>
       <select asp-for="Tamanho" name="tamanho" class="form-control" id="tamanho" asp-items="Html.GetEnumSelectList<Marmitex.Domain.Enums.Tamanho>()"></select>      
       <span class="text-danger" asp-validation-for="Tamanho"></span>
     </div>
@@ -90,12 +104,35 @@
     </div>    
     <br>
     <!-- <button type="submit" name="btn" value="Adicionar" class="btn btn-primary">Adicionar</button> -->
-    <a href="#"  onclick="AddCarrinho();">Adicionar</a>
-    <button type="submit" name="btn" value="Finalizar" class="btn btn-success">Finalizar</button>
+    <a href="#" onclick="AddCarrinho();" class="btn btn-success">Adicionar</a>
+    <!-- <button type="submit" name="btn" value="Finalizar" class="btn btn-success">Finalizar</button> -->
     <br>
   </form>
 </div>
 
+<!-- popup -->
+
+<button class="open-button" onclick="openForm()">Carrinho  <span class="w3-badge"></span></button>
+
+<div class="chat-popup" id="myForm">
+   <div class="form-container" id="itens-carrinho">
+    <h3>Itens <i class="fa fa-shopping-cart"></i></h3><hr>   
+    <div class="wrapper">
+      <!-- itens do carrinho -->
+    </div>    
+             
+    <button type="button" id="minimizar" class="btn cancel" onclick="closeForm()">Minimizar</button>
+   </div>
+</div>
+
+<script>
+    function openForm() {
+        document.getElementById("myForm").style.display = "block";  
+    }
+    function closeForm() {
+        document.getElementById("myForm").style.display = "none";
+    }
+</script>
 
 @section Scripts {
   @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

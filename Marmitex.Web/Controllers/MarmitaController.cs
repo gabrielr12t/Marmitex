@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -30,9 +31,17 @@ namespace Marmitex.Web.Controllers
             _misturaRepository = misturaRepository;
             _marmitaRepository = marmitaRepository;
         }
-        public string GetCookie(string cookie)
+        private string GetCookie(string cookie)
         {
             return Request.Cookies[cookie];
+        }
+        private void RemoveCookie(string keys)
+        {
+            Response.Cookies.Delete(keys);
+        }
+        private void RemoveCookies(List<string> keys)
+        {
+            foreach (var item in keys) Response.Cookies.Delete(item);
         }
         //método para preencher classe
         public MarmitaViewModel MarmitaViewModelDB()
@@ -47,18 +56,6 @@ namespace Marmitex.Web.Controllers
         }//---------------------
 
 
-        private IActionResult Adicionar(Marmita marmita)
-        {
-            return View(MarmitaViewModelDB());
-            // return RedirectToAction(nameof(Registro));
-        }
-        private IActionResult Finalizar()
-        {
-            var cookie = GetCookie("carrinho");
-            var resultado = JsonConvert.DeserializeObject<List<ItensDoPedido>>(cookie);
-            // return View(nameof(Registro));
-            return View(MarmitaViewModelDB());
-        }
         [HttpGet]
         public IActionResult Registro(ClienteViewModel clienteViewModel = null)
         {
@@ -66,23 +63,20 @@ namespace Marmitex.Web.Controllers
             return View(MarmitaViewModelDB());
         }
         [HttpPost]
-        public IActionResult Registro(int misturaId, int[] selectAcompanhamentos, int saladaId, Tamanho tamanho, string observacao, string entrega, string btn)
+        public IActionResult Registro()
         {
             try
             {
-                var acompanhamentos = _acompanhamentoRepository.GetByIds(selectAcompanhamentos);
-                var mistura = _misturaRepository.GetById(misturaId);
-                Marmita marmita = new Marmita(mistura, acompanhamentos, saladaId, tamanho, observacao, entrega);
-                switch (btn)
-                {
-                    case "Adicionar":
-                        return (Adicionar(marmita));
-                    case "Finalizar":
-                        return (Finalizar());
-                }
-                return View(MarmitaViewModelDB());
+                if (GetCookie("carrinho") == null) throw new Exception("Carrinho está vazio");
+                if (GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado");
+                var carrinho = JsonConvert.DeserializeObject<List<Marmita>>(GetCookie("carrinho"));
+                var cliente = JsonConvert.DeserializeObject<Cliente>(GetCookie("cliente"));
+                
+                RemoveCookies(new List<string> { "cliente", "carrinho" });//limpando cookie após a compra
+                ModelState.Clear();
+                return Ok(MarmitaViewModelDB());
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 // ModelState.AddModelError("", "Ocorreu um erro, tente novamente");
                 ModelState.AddModelError("", e.Message);

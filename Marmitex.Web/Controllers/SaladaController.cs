@@ -24,12 +24,21 @@ namespace Marmitex.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Registro(int id)
         {
-            await _cardapioRepository.RemoveProdutoAntigo<Salada>();
-            var saladaViewModel = new SaladaViewModel();
-            var salada = _cardapioRepository.GetById(id);
-            if (salada != null) saladaViewModel = _mapper.Map<SaladaViewModel>(salada);
-            saladaViewModel.Saladas = _mapper.Map<List<SaladaViewModel>>(_cardapioRepository.Ativos<Salada>());
-            return View(saladaViewModel);
+            try
+            {
+                await _cardapioRepository.RemoveProdutoAntigo<Salada>();
+                var saladaViewModel = new SaladaViewModel();
+                var salada = _cardapioRepository.GetById(id);
+                if (salada != null) saladaViewModel = _mapper.Map<SaladaViewModel>(salada);
+                saladaViewModel.Saladas = _mapper.Map<List<SaladaViewModel>>(_cardapioRepository.Ativos<Salada>());
+                return View(saladaViewModel);
+            }
+            catch (System.Exception e)
+            {
+                ModelState.AddModelError(string.Empty,e.Message);
+                return View();
+            }
+
         }
         [HttpPost]
         public async Task<IActionResult> Registro(SaladaViewModel saladaViewModel)
@@ -47,8 +56,8 @@ namespace Marmitex.Web.Controllers
             }
             catch (System.Exception e)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                $"Falha para salvar dados {e.Message}");
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View();
             }
         }
 

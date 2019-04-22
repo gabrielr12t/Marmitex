@@ -1,5 +1,6 @@
 using System;
 using Marmitex.Domain.BaseEntity;
+using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
 
 namespace Marmitex.Domain.Entidades
@@ -10,15 +11,16 @@ namespace Marmitex.Domain.Entidades
 
         public Mistura(string nome, decimal acrescimoValor, DateTime data)
         {
-            SetProperties(nome, acrescimoValor, data);
+            SetPropertiesAndValidateNome(nome, acrescimoValor, data);
         }
         public Mistura()
         {
 
         }
 
-        private void SetProperties(string nome, decimal acrescimoValor, DateTime data)
+        private void SetPropertiesAndValidateNome(string nome, decimal acrescimoValor, DateTime data)
         {
+            DomainException.When(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
             this.Nome = nome;
             this.AcrescimoValor = acrescimoValor;
             this.Data = this.Id > 0 ? data : DateTime.Now;
@@ -27,7 +29,7 @@ namespace Marmitex.Domain.Entidades
 
         public void Update(string nome, decimal acrescimoValor, DateTime data)
         {
-            SetProperties(nome, acrescimoValor, data);
+            SetPropertiesAndValidateNome(nome, acrescimoValor, data);
         }
     }
 }
