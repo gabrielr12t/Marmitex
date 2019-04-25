@@ -20,16 +20,14 @@ namespace Marmitex.Web.Controllers
         private readonly ISaladaRepository _saladaRepository;
         private readonly IMapper _mapper;
         private readonly IMisturaRepository _misturaRepository;
-        private readonly IMarmitaRepository _marmitaRepository;
 
-        public MarmitaController(IMarmitaRepository marmitaRepository, IMisturaRepository misturaRepository,
+        public MarmitaController(IMisturaRepository misturaRepository,
         ISaladaRepository saladaRepository, IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper)
         {
             _acompanhamentoRepository = acompanhamentoRepository;
             _saladaRepository = saladaRepository;
             _mapper = mapper;
             _misturaRepository = misturaRepository;
-            _marmitaRepository = marmitaRepository;
         }
         private string GetCookie(string cookie)
         {
@@ -60,6 +58,7 @@ namespace Marmitex.Web.Controllers
         public IActionResult Registro(ClienteViewModel clienteViewModel = null)
         {
             //if (string.IsNullOrEmpty(clienteViewModel.Nome)) return RedirectToAction("Cadastro", "Cliente");
+            if (GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado");
             return View(MarmitaViewModelDB());
         }
         [HttpPost]
@@ -71,7 +70,7 @@ namespace Marmitex.Web.Controllers
                 if (GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado");
                 var carrinho = JsonConvert.DeserializeObject<List<Marmita>>(GetCookie("carrinho"));
                 var cliente = JsonConvert.DeserializeObject<Cliente>(GetCookie("cliente"));
-                
+
                 RemoveCookies(new List<string> { "cliente", "carrinho" });//limpando cookie após a compra
                 ModelState.Clear();
                 return Ok(MarmitaViewModelDB());

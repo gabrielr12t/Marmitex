@@ -40,7 +40,7 @@ namespace Marmitex.Data.Repositories
             bool isTelefone = telefone != null && telefone.Length == 14;
             bool telefoneIsValid = !string.IsNullOrEmpty(telefone) && (isCelular || isTelefone);
 
-            var cliente = telefoneIsValid ? _context.Set<Cliente>().FirstOrDefault(c => c.Telefone.Equals(telefone.Trim()) || c.Celular.Equals(telefone.Trim())) : null;
+            var cliente = telefoneIsValid ? GetOneWithPredicate(c => c.Telefone.Equals(telefone.Trim()) || c.Celular.Equals(telefone.Trim())) : null;
 
             if (cliente == null)
             {

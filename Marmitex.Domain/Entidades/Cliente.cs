@@ -29,18 +29,17 @@ namespace Marmitex.Domain.Entidades
         {
             SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
         }
-
         private void ValidationProperties(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular)
         {
-            DomainException.When(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
-            DomainException.When(string.IsNullOrEmpty(sexo.ToString()), "Escolha uma opção de sexo");
-            DomainException.When(string.IsNullOrEmpty(rua), "O campo rua é obrigatório");
-            DomainException.When(ruaNumero <= 0, "O campo número da rua é obrigatório");
-            DomainException.When(string.IsNullOrEmpty(bairro), "O campo bairro é obrigatório");
-            DomainException.When(string.IsNullOrEmpty(numeroCasa), "O campo número da casa é obrigatório");
-            DomainException.When(string.IsNullOrEmpty(telefone), "O campo telefone é obrigatório");
-            DomainException.When(telefone.Length != 14, "Telefone inválido");
-            if (celular != null && celular.Length > 0) DomainException.When(celular.Length != 15, "Celular inválido");
+            ExceptionClass.Exec(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
+            ExceptionClass.Exec(string.IsNullOrEmpty(sexo.ToString()), "Escolha uma opção de sexo");
+            ExceptionClass.Exec(string.IsNullOrEmpty(rua), "O campo rua é obrigatório");
+            ExceptionClass.Exec(ruaNumero <= 0, "O campo número da rua é obrigatório");
+            ExceptionClass.Exec(string.IsNullOrEmpty(bairro), "O campo bairro é obrigatório");
+            ExceptionClass.Exec(string.IsNullOrEmpty(numeroCasa), "O campo número da casa é obrigatório");
+            ExceptionClass.Exec(string.IsNullOrEmpty(telefone), "O campo telefone é obrigatório");
+            ExceptionClass.Exec(telefone.Length != 14, "Telefone inválido");
+            if (celular != null && celular.Length > 0) ExceptionClass.Exec(celular.Length != 15, "Celular inválido");
         }
 
         private void SetProperties(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)

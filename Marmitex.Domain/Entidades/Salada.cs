@@ -21,12 +21,10 @@ namespace Marmitex.Domain.Entidades
         }
         private void SetPropertiesAndValidateNome(string nome, DateTime data)
         {
-            DomainException.When(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
+            ExceptionClass.Exec(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
             this.Nome = nome;
             this.Data = this.Id > 0 ? data : DateTime.Now;
             this.StatusCardapio = StatusCardapio.ATIVO;
         }
-
-
     }
 }

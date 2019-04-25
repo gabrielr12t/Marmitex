@@ -11,16 +11,17 @@ namespace Marmitex.Domain.Entidades
 
         public Mistura(string nome, decimal acrescimoValor, DateTime data)
         {
-            SetPropertiesAndValidateNome(nome, acrescimoValor, data);
+            SetPropertiesAndValidateNomeAndValor(nome, acrescimoValor, data);
         }
         public Mistura()
         {
 
         }
 
-        private void SetPropertiesAndValidateNome(string nome, decimal acrescimoValor, DateTime data)
+        private void SetPropertiesAndValidateNomeAndValor(string nome, decimal acrescimoValor, DateTime data)
         {
-            DomainException.When(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
+            ExceptionClass.Exec(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
+            ExceptionClass.Exec(acrescimoValor < 0, "Valor não pode ser menor que zero");
             this.Nome = nome;
             this.AcrescimoValor = acrescimoValor;
             this.Data = this.Id > 0 ? data : DateTime.Now;
@@ -29,7 +30,7 @@ namespace Marmitex.Domain.Entidades
 
         public void Update(string nome, decimal acrescimoValor, DateTime data)
         {
-            SetPropertiesAndValidateNome(nome, acrescimoValor, data);
+            SetPropertiesAndValidateNomeAndValor(nome, acrescimoValor, data);
         }
     }
 }

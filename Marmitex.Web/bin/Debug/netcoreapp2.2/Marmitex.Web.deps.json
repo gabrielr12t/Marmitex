@@ -548,6 +548,9 @@
         }
       },
       "Marmitex.Domain/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Options": "2.2.0"
+        },
         "runtime": {
           "Marmitex.Domain.dll": {}
         },

@@ -22,11 +22,10 @@ namespace Marmitex.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Registro(int id)
+        public IActionResult Registro(int id)
         {
             try
             {
-                await _cardapioRepository.RemoveProdutoAntigo<Salada>();
                 var saladaViewModel = new SaladaViewModel();
                 var salada = _cardapioRepository.GetById(id);
                 if (salada != null) saladaViewModel = _mapper.Map<SaladaViewModel>(salada);
@@ -35,7 +34,7 @@ namespace Marmitex.Web.Controllers
             }
             catch (System.Exception e)
             {
-                ModelState.AddModelError(string.Empty,e.Message);
+                ModelState.AddModelError(string.Empty, e.Message);
                 return View();
             }
 
@@ -52,6 +51,7 @@ namespace Marmitex.Web.Controllers
                 var SaladaMapper = _mapper.Map<List<SaladaViewModel>>(_cardapioRepository.Ativos<Salada>());
                 saladaViewModel = new SaladaViewModel { Saladas = SaladaMapper };
                 ModelState.Clear();
+                _cardapioRepository.RemoveProdutoAntigo<Salada>();
                 return View(saladaViewModel);
             }
             catch (System.Exception e)

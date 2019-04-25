@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Marmitex.Data.Context;
 using Marmitex.Domain.BaseEntity;
@@ -31,14 +32,11 @@ namespace Marmitex.Data.Repositories
         }
         public virtual IQueryable<TEntity> GetAll()
         {
-            IQueryable<TEntity> query = _context.Set<TEntity>();
-            return query.AsQueryable();
+            return _context.Set<TEntity>().AsQueryable();
         }
         public virtual TEntity GetById(long id)
         {
-            var obj = _context.Set<TEntity>().FirstOrDefault(e => e.Id == id);
-            if (obj == null && id != 0) DomainException.When(true, "Não foi possível encontrar este dado no nosso banco");
-            return obj;
+            return id > 0 ? _context.Set<TEntity>().FirstOrDefault(e => e.Id == id) : null;
         }
         public virtual void Remove(TEntity obj)
         {
@@ -54,15 +52,14 @@ namespace Marmitex.Data.Repositories
         {
             _context.Entry(obj).State = EntityState.Modified;
         }
-        public virtual async Task RemoveProdutoAntigo<T>() where T : Cardapio
+        public virtual void RemoveProdutoAntigo<T>() where T : Cardapio
         {
-            var itens = await _context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()).ToListAsync();
-            _context.Set<T>().RemoveRange(itens);
-            // await Save();
+            var lista = _context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString());
+            _context.Set<T>().RemoveRange((IEnumerable<T>)lista);
         }
         public virtual void Desativar<T>(TEntity obj) where T : Cardapio
         {
-            var item = obj.Id > 0 ? _context.Set<T>().FirstOrDefault(e => e.Id == obj.Id) : null;
+            var item = _context.Set<T>().FirstOrDefault(e => e.Id == obj.Id);
             item.StatusCardapio = StatusCardapio.INATIVO;
         }
         IQueryable<T> IRepositoryBase<TEntity>.Ativos<T>()
@@ -77,6 +74,16 @@ namespace Marmitex.Data.Repositories
             List<TEntity> lista = new List<TEntity>();
             foreach (var item in ids) lista.Add(GetById(item));
             return lista.AsQueryable();
+        }
+
+        public TEntity GetOneWithPredicate(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _context.Set<TEntity>().Where(predicate).FirstOrDefault();
+        }
+
+        public IQueryable<TEntity> GetAnyWithPredicate(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _context.Set<TEntity>().Where(predicate);
         }
     }
 }

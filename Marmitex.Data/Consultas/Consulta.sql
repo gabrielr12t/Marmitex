@@ -1,6 +1,5 @@
 
  
-
-
- SELECT * from Misturas
+SELECT * From Saladas
+ 
  

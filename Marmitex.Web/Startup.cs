@@ -7,6 +7,7 @@ using Marmitex.DI;
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
+using Marmitex.Domain.Services.Email;
 using Marmitex.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -52,7 +53,10 @@ namespace Marmitex.Web
 
             Init.ConfigureServices(services, Configuration.GetConnectionString("DefaultConnection"));
 
-             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //
             var config = new AutoMapper.MapperConfiguration(cfg =>
@@ -76,13 +80,10 @@ namespace Marmitex.Web
                {
                    //Request
                    await next.Invoke();
-                   //Response
-                   //var item = (ICardapioRepository<object>)context.RequestServices.GetService(typeof(ICardapioRepository<object>));
-
-                   var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
+                   //Response                  
+                    var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));                   
                    //    await item.RemoveProdutoAntigo();
-                   await unitOfWork.Commit();
-
+                   await unitOfWork.Commit();                   
                }
             );
             // end save
@@ -99,15 +100,13 @@ namespace Marmitex.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-             
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Cliente}/{action=Index}/{id?}");
             });
-
-             
         }
     }
 }

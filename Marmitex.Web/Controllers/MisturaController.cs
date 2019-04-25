@@ -19,43 +19,43 @@ namespace Marmitex.Web.Controllers
             _mapper = mapper;
         }
 
-
         [HttpGet]
         public IActionResult Registro(int id)
         {
-
-            //get all misturas do dia
-            var misturaViewModel = new MisturaViewModel();
-            // -----------------------
-            var mistura = _misturaRepository.GetById(id);
-            if (mistura != null) misturaViewModel = _mapper.Map<MisturaViewModel>(mistura);
-            //atribuindo misturas do dia a viewModel
-            misturaViewModel.Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>());//list de misturas para viewModel
-            // ModelState.Clear();
-            return View(misturaViewModel);
-
+            Mistura mistura = null;
+            MisturaViewModel viewModel = null;
+            try
+            {
+                viewModel = new MisturaViewModel();
+                mistura = _misturaRepository.GetById(id);
+                if (mistura != null) viewModel = _mapper.Map<MisturaViewModel>(mistura);
+                viewModel.Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>());//list de misturas para viewModel
+                return View(viewModel);
+            }
+            catch (System.Exception e)
+            {
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View(viewModel);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Registro(MisturaViewModel misturaViewModel)
         {
+
             try
             {
                 _misturaRepository.Add(_mapper.Map<Mistura>(misturaViewModel));
                 await _misturaRepository.Save();
-                //Get all misturas do dia
                 var MisturaMapper = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>());//list de misturas para viewModel
-
                 misturaViewModel = new MisturaViewModel { Misturas = MisturaMapper };
-                // -----------------------------                
                 ModelState.Clear();
-
                 return View(misturaViewModel);
             }
-            catch (System.Exception ex)
+            catch (System.Exception e)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Banco Dados Falhou {ex.Message}");
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View(misturaViewModel);
             }
         }
 

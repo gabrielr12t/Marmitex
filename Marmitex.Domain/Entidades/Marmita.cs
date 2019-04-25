@@ -58,7 +58,7 @@ namespace Marmitex.Domain.Entidades
 
         private void ValidateProperties(Mistura mistura)
         {
-            DomainException.When(mistura == null, "Campo nome é obrigatório");
+            ExceptionClass.Exec(mistura == null, "Campo nome é obrigatório");
         }
         private void SetProperties(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, List<Acompanhamento> acompanhamentos)
         {
