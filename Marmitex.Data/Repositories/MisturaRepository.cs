@@ -11,9 +11,9 @@ namespace Marmitex.Data.Repositories
     public class MisturaRepository : RepositoryBase<Mistura>, IMisturaRepository
     {
         public MisturaRepository(ApplicationDbContext context) : base(context) { }
-        public override void Add(Mistura obj)
+        public override async Task Add(Mistura obj)
         {
-            var mistura = obj.Id > 0 ? _context.Misturas.FirstOrDefault(x => x.Id == obj.Id) : null;
+            var mistura = obj.Id > 0 ? await _context.Misturas.FirstOrDefaultAsync(x => x.Id == obj.Id) : null;
             if (mistura == null)
             {
                 //create
@@ -23,6 +23,7 @@ namespace Marmitex.Data.Repositories
             }
             //update
             mistura.Update(obj.Nome, obj.AcrescimoValor, mistura.Data);
+            _context.Misturas.Update(mistura);
         }
     }
 }

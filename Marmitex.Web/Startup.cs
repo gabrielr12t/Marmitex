@@ -75,17 +75,13 @@ namespace Marmitex.Web
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             //save database
-            app.Use
-            (async (context, next) =>
-               {
-                   //Request
-                   await next.Invoke();
-                   //Response                  
-                    var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));                   
-                   //    await item.RemoveProdutoAntigo();
-                   await unitOfWork.Commit();                   
-               }
-            );
+            app.Use(async (context, next) =>
+            {
+                await next.Invoke();
+
+                var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
+                await unitOfWork.Commit();
+            });
             // end save
 
             if (env.IsDevelopment())

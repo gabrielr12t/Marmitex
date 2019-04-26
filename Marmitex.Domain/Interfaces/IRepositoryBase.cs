@@ -9,18 +9,18 @@ namespace Marmitex.Domain.Interfaces
 {
     public interface IRepositoryBase<TEntity>
     {
-        void Add(TEntity obj);
-        TEntity GetById(long id);
-        IQueryable<TEntity> GetByIds(int[] id);
-        IQueryable<TEntity> GetAll();
+        Task Add(TEntity obj);
+        Task<TEntity> GetById(long id);
+        Task<IEnumerable<TEntity>> GetByIds(int[] id);
+        Task<IEnumerable<TEntity>> GetAll();
         void Update(TEntity obj);
         void Remove(TEntity obj);
         Task Save();
-        void RemoveProdutoAntigo<T>() where T : Cardapio;
-        void Desativar<T>(TEntity obj) where T : Cardapio;
-        IQueryable<T> Ativos<T>() where T : Cardapio;
-        TEntity GetOneWithPredicate(Expression<Func<TEntity, bool>> predicate);
-        IQueryable<TEntity> GetAnyWithPredicate(Expression<Func<TEntity, bool>> predicate);
+        Task RemoveProdutoAntigo<T>() where T : Cardapio;
+        Task Desativar<T>(TEntity obj) where T : Cardapio;
+        Task<IEnumerable<T>> Ativos<T>() where T : Cardapio;
+        Task<TEntity> GetOneWithPredicate(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> GetAnyWithPredicate(Expression<Func<TEntity, bool>> predicate);
 
     }
 }

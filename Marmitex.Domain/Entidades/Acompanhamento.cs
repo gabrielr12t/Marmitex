@@ -16,16 +16,15 @@ namespace Marmitex.Domain.Entidades
             SetPropertiesAndValidateNome(nome, data);
         }
 
-
         private void SetPropertiesAndValidateNome(string nome, DateTime data)
         {
             ExceptionClass.Exec(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
-            this.Nome = nome;
+            this.Nome = nome.Trim();
             this.Data = this.Id > 0 ? data : DateTime.Now;
             this.StatusCardapio = StatusCardapio.ATIVO;
         }
 
-        public void Update(string nome, decimal acrescimoValor, DateTime data)
+        public void Update(string nome, DateTime data)
         {
             SetPropertiesAndValidateNome(nome, data);
         }

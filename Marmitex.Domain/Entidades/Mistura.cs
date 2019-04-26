@@ -22,7 +22,7 @@ namespace Marmitex.Domain.Entidades
         {
             ExceptionClass.Exec(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
             ExceptionClass.Exec(acrescimoValor < 0, "Valor não pode ser menor que zero");
-            this.Nome = nome;
+            this.Nome = nome.Trim();
             this.AcrescimoValor = acrescimoValor;
             this.Data = this.Id > 0 ? data : DateTime.Now;
             this.StatusCardapio = StatusCardapio.ATIVO;

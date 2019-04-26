@@ -27,7 +27,7 @@ namespace Marmitex.Domain.Services.Email
                 Execute(email, subject, message).Wait();
                 return Task.FromResult(0);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }

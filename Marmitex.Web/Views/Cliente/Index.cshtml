@@ -41,6 +41,7 @@
       <label>Telefone/Celular:</label>
       <input class="form-control celular" id="celular" asp-for="Numero" autofocus  placeholder="Entre com o telefone ou celular">
       <span class="text-danger" asp-validation-for="Numero"></span>
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>      
     </div>
     <div class="row">
       <div class="col-lg-6">

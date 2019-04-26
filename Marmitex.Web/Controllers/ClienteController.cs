@@ -50,28 +50,28 @@ namespace Marmitex.Web.Controllers
         }
         // ------
 
-        public MarmitaViewModel MarmitaViewModelDB()
+        public async Task<MarmitaViewModel> MarmitaViewModelDB()
         {
             var marmitaViewModel = new MarmitaViewModel
             {
-                Saladas = _mapper.Map<List<SaladaViewModel>>(_saladaRepository.Ativos<Salada>()),
-                Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>()),
-                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_acompanhamentoRepository.Ativos<Acompanhamento>())
+                Saladas = _mapper.Map<List<SaladaViewModel>>(await _saladaRepository.Ativos<Salada>()),
+                Misturas = _mapper.Map<List<MisturaViewModel>>(await _misturaRepository.Ativos<Mistura>()),
+                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(await _acompanhamentoRepository.Ativos<Acompanhamento>())
             };
             return marmitaViewModel;
         }//---------------------
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
-                return View(MarmitaViewModelDB());
+                return View(await MarmitaViewModelDB());
             }
             catch (System.Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return View(MarmitaViewModelDB());
+                return View(await MarmitaViewModelDB());
             }
             //EnviarEmail("edsonromero2014@gmail.com", "Steam Authorize", MSG).GetAwaiter();
 
@@ -79,28 +79,27 @@ namespace Marmitex.Web.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Index(MarmitaViewModel viewModel)
+        public async Task<IActionResult> Index(MarmitaViewModel viewModel)
         {
             try
             {
-
-                if (string.IsNullOrEmpty(viewModel.Numero)) throw new ExceptionClass("Campo número é obrigatório");
-                var cliente = _clienteRepository.GetClienteByTelefone(viewModel.Numero);
+                if (string.IsNullOrEmpty(viewModel.Numero)) throw new Exception("Campo número é obrigatório");
+                var cliente = await _clienteRepository.GetClienteByTelefone(viewModel.Numero);
                 return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = viewModel.Numero }) : RedirectToAction("Registro", "Marmita", _mapper.Map<ClienteViewModel>(cliente));
             }
             catch (System.Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return View(MarmitaViewModelDB());
+                return View(await MarmitaViewModelDB());
             }
         }
 
         [HttpGet]
-        public IActionResult Cadastro(int id, string numero = null)
+        public async Task<IActionResult> Cadastro(int id, string numero = null)
         {
             try
             {
-                var cliente = id > 0 ? _clienteRepository.GetById(id) : ((!string.IsNullOrEmpty(numero)) ? _clienteRepository.GetClienteByTelefone(numero) : new Cliente());
+                var cliente = id > 0 ? await _clienteRepository.GetById(id)  : ((!string.IsNullOrEmpty(numero)) ? await _clienteRepository.GetClienteByTelefone(numero) : new Cliente());
                 return View(_mapper.Map<ClienteViewModel>(cliente));
             }
             catch (System.Exception e)
@@ -113,14 +112,14 @@ namespace Marmitex.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Cadastro(ClienteViewModel clienteViewModel)
+        public async Task<IActionResult> Cadastro(ClienteViewModel clienteViewModel)
         {
             try
             {
                 var cliente = _mapper.Map<Cliente>(clienteViewModel);
-                _clienteRepository.Add(cliente);
+                await _clienteRepository.Add(cliente);
                 ModelState.Clear();
-             return RedirectToAction(nameof(Listar));
+                return RedirectToAction(nameof(Listar));
                 //return RedirectToAction("Registro", "Marmita", clienteViewModel);
             }
             catch (Exception e)
@@ -131,17 +130,17 @@ namespace Marmitex.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Listar()
+        public async Task<IActionResult> Listar()
         {
-            var clientes = _clienteRepository.GetAll();
+            var clientes = await _clienteRepository.GetAll();
             var mappedCliente = _mapper.Map<List<ClienteViewModel>>(clientes);
             return mappedCliente.Any() ? View(mappedCliente) : View(new List<ClienteViewModel>());
         }
 
         [HttpPost]
-        public IActionResult Delete(int Id)
+        public async Task<IActionResult> Delete(int Id)
         {
-            var cliente = _clienteRepository.GetById(Id);
+            var cliente = await _clienteRepository.GetById(Id);
             if (cliente != null) _clienteRepository.Remove(cliente);
             return cliente != null ? Ok(cliente) : null;
         }

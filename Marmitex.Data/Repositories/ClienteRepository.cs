@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Marmitex.Data.Context;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
@@ -10,22 +11,22 @@ namespace Marmitex.Data.Repositories
     public class ClienteRepository : RepositoryBase<Cliente>, IClienteRepository
     {
         public ClienteRepository(ApplicationDbContext context) : base(context) { }
-        public override void Add(Cliente obj)
+        public override async Task Add(Cliente obj)
         {
-            Cliente cliente = null;
+            Cliente cliente = await GetById(obj.Id);
 
-            if (obj.Id == 0)
+            if (cliente == null)
             {
                 //create
-                cliente = new Cliente(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua,
+                cliente = new Cliente(obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua,
                 obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular, DateTime.Now);
                 _context.Clientes.Add(cliente);
                 return;
             }
-            //update    
-            cliente = GetById(obj.Id);
-            cliente.Update(obj.Id, obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa,
+            //update                
+            cliente.Update(obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa,
             obj.Telefone, obj.Celular, cliente.DataCadastro);
+            _context.Clientes.Update(cliente);
         }
 
         public IQueryable<Pedido> ClientePedidos(int id)
@@ -34,13 +35,13 @@ namespace Marmitex.Data.Repositories
             return query.Any() ? query.AsQueryable() : null;
         }
 
-        public Cliente GetClienteByTelefone(string telefone)
+        public async Task<Cliente> GetClienteByTelefone(string telefone)
         {
             bool isCelular = telefone != null && telefone.Length == 15;
             bool isTelefone = telefone != null && telefone.Length == 14;
             bool telefoneIsValid = !string.IsNullOrEmpty(telefone) && (isCelular || isTelefone);
 
-            var cliente = telefoneIsValid ? GetOneWithPredicate(c => c.Telefone.Equals(telefone.Trim()) || c.Celular.Equals(telefone.Trim())) : null;
+            var cliente = telefoneIsValid ? await GetOneWithPredicate(c => c.Telefone.Equals(telefone.Trim()) || c.Celular.Equals(telefone.Trim())) : null;
 
             if (cliente == null)
             {

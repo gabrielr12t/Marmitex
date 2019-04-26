@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Enums;
@@ -42,27 +43,34 @@ namespace Marmitex.Web.Controllers
             foreach (var item in keys) Response.Cookies.Delete(item);
         }
         //método para preencher classe
-        public MarmitaViewModel MarmitaViewModelDB()
+        public async Task<MarmitaViewModel> MarmitaViewModelDB()
         {
             var marmitaViewModel = new MarmitaViewModel
             {
-                Saladas = _mapper.Map<List<SaladaViewModel>>(_saladaRepository.Ativos<Salada>()),
-                Misturas = _mapper.Map<List<MisturaViewModel>>(_misturaRepository.Ativos<Mistura>()),
-                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(_acompanhamentoRepository.Ativos<Acompanhamento>())
+                Saladas = _mapper.Map<List<SaladaViewModel>>(await _saladaRepository.Ativos<Salada>()),
+                Misturas = _mapper.Map<List<MisturaViewModel>>(await _misturaRepository.Ativos<Mistura>()),
+                Acompanhamentos = _mapper.Map<List<AcompanhamentoViewModel>>(await _acompanhamentoRepository.Ativos<Acompanhamento>())
             };
             return marmitaViewModel;
         }//---------------------
 
 
         [HttpGet]
-        public IActionResult Registro(ClienteViewModel clienteViewModel = null)
+        public async Task<IActionResult> Registro(ClienteViewModel clienteViewModel = null)
         {
-            //if (string.IsNullOrEmpty(clienteViewModel.Nome)) return RedirectToAction("Cadastro", "Cliente");
-            if (GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado");
-            return View(MarmitaViewModelDB());
+            try
+            {
+                if (clienteViewModel == null) throw new Exception("Nenhum cliente selecionado");
+                return View(await MarmitaViewModelDB());
+            }
+            catch (System.Exception e)
+            {
+                ModelState.AddModelError(string.Empty, e.Message);
+                return RedirectToAction("Index", "Cliente");
+            }
         }
         [HttpPost]
-        public IActionResult Registro()
+        public async Task<IActionResult> Registro()
         {
             try
             {
@@ -73,13 +81,12 @@ namespace Marmitex.Web.Controllers
 
                 RemoveCookies(new List<string> { "cliente", "carrinho" });//limpando cookie após a compra
                 ModelState.Clear();
-                return Ok(MarmitaViewModelDB());
+                return Ok(await MarmitaViewModelDB());
             }
             catch (Exception e)
             {
-                // ModelState.AddModelError("", "Ocorreu um erro, tente novamente");
                 ModelState.AddModelError("", e.Message);
-                return View(MarmitaViewModelDB());
+                return View(await MarmitaViewModelDB());
             }
         }
     }

@@ -1,6 +1,8 @@
+using System.Threading.Tasks;
 using Marmitex.Data.Context;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Marmitex.Data.Repositories
 {
@@ -8,6 +10,21 @@ namespace Marmitex.Data.Repositories
     {
         public AcompanhamentoRepository(ApplicationDbContext context) : base(context)
         {
+        }
+
+        public override async Task Add(Acompanhamento obj)
+        {
+            var acompanhamento = obj.Id > 0 ? await _context.Acompanhamentos.FirstOrDefaultAsync(x => x.Id == obj.Id) : null;
+            if (acompanhamento == null)
+            {
+                //create
+                acompanhamento = new Acompanhamento(obj.Nome, obj.Data);
+                _context.Add(acompanhamento);
+                return;
+            }
+            //update
+            acompanhamento.Update(obj.Nome, acompanhamento.Data);
+            _context.Acompanhamentos.Update(acompanhamento);
         }
     }
 }

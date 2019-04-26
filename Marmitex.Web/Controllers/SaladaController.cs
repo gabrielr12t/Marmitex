@@ -21,21 +21,30 @@ namespace Marmitex.Web.Controllers
             _mapper = mapper;
         }
 
+        private async Task<SaladaViewModel> GetSaladas()
+        {
+            var saladaViewModel = new SaladaViewModel
+            {
+                Saladas = _mapper.Map<List<SaladaViewModel>>(await _cardapioRepository.Ativos<Salada>())
+            };
+            return saladaViewModel;
+        }
+
         [HttpGet]
-        public IActionResult Registro(int id)
+        public async Task<IActionResult> Registro(int id)
         {
             try
             {
                 var saladaViewModel = new SaladaViewModel();
-                var salada = _cardapioRepository.GetById(id);
+                var salada = await _cardapioRepository.GetById(id);
                 if (salada != null) saladaViewModel = _mapper.Map<SaladaViewModel>(salada);
-                saladaViewModel.Saladas = _mapper.Map<List<SaladaViewModel>>(_cardapioRepository.Ativos<Salada>());
+                saladaViewModel.Saladas = _mapper.Map<List<SaladaViewModel>>(await _cardapioRepository.Ativos<Salada>());
                 return View(saladaViewModel);
             }
             catch (System.Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return View();
+                return View(await GetSaladas());
             }
 
         }
@@ -44,28 +53,26 @@ namespace Marmitex.Web.Controllers
         {
             try
             {
-                _cardapioRepository.AddCardapio(_mapper.Map<Salada>(saladaViewModel));
-                //_cardapioRepository.AddCardapio<Salada>(_mapper.Map<Salada>(saladaViewModel));
+                await _cardapioRepository.AddCardapio(_mapper.Map<Salada>(saladaViewModel));
                 await _cardapioRepository.Save();
+                //_cardapioRepository.AddCardapio<Salada>(_mapper.Map<Salada>(saladaViewModel));
 
-                var SaladaMapper = _mapper.Map<List<SaladaViewModel>>(_cardapioRepository.Ativos<Salada>());
-                saladaViewModel = new SaladaViewModel { Saladas = SaladaMapper };
                 ModelState.Clear();
-                _cardapioRepository.RemoveProdutoAntigo<Salada>();
-                return View(saladaViewModel);
+                await _cardapioRepository.RemoveProdutoAntigo<Salada>();
+                return View(await GetSaladas());
             }
             catch (System.Exception e)
-            {
+            {               
                 ModelState.AddModelError(string.Empty, e.Message);
-                return View();
+                return View(await GetSaladas());
             }
         }
 
-        public IActionResult Delete(int Id)
+        public async Task<IActionResult> Delete(int Id)
         {
             ModelState.Clear();
-            var salada = _cardapioRepository.GetById(Id);
-            if (salada != null) _cardapioRepository.Desativar<Salada>(salada);
+            var salada = await _cardapioRepository.GetById(Id);
+            if (salada != null) await _cardapioRepository.Desativar<Salada>(salada);
             return RedirectToAction(nameof(Registro));
         }
     }

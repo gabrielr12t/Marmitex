@@ -12,9 +12,9 @@ namespace Marmitex.Data.Repositories
     public class CardapioRepository<T> : RepositoryBase<T>, ICardapioRepository<T> where T : Cardapio
     {
         public CardapioRepository(ApplicationDbContext context) : base(context) { }
-        public void AddCardapio(T t)
+        public async Task AddCardapio(T t)
         {
-            var exist = GetById(t.Id);
+            var exist = await GetById(t.Id);
             var obj = typeof(T);
             Salada salada = null;
             Acompanhamento acompanhamento = null;
@@ -34,7 +34,8 @@ namespace Marmitex.Data.Repositories
                 }
             }
             //update;
-            exist.Nome = t.Nome;
+            //exist.Nome = t.Nome;
+            _context.Entry(t).State = EntityState.Modified;
         }
 
     }

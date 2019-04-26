@@ -21,22 +21,24 @@ namespace Marmitex.Data.Repositories
             _context = context;
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
-        public virtual void Add(TEntity obj)
+        public virtual async Task Add(TEntity obj)
         {
-            if (obj.Id == 0)
+            var item = await GetById(obj.Id);
+            if (item == null)
             {
                 _context.Set<TEntity>().Add(obj);
-                return;
             }
             _context.Entry(obj).State = EntityState.Modified;
         }
-        public virtual IQueryable<TEntity> GetAll()
+        public virtual async Task<IEnumerable<TEntity>> GetAll()
         {
-            return _context.Set<TEntity>().AsQueryable();
+            return await _context.Set<TEntity>().ToListAsync();
         }
-        public virtual TEntity GetById(long id)
+        public virtual async Task<TEntity> GetById(long id)
         {
-            return id > 0 ? _context.Set<TEntity>().FirstOrDefault(e => e.Id == id) : null;
+            var obj = await _context.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id);
+            if (obj == null && id > 0) throw new Exception("Não encontrado");
+            return obj;
         }
         public virtual void Remove(TEntity obj)
         {
@@ -52,38 +54,39 @@ namespace Marmitex.Data.Repositories
         {
             _context.Entry(obj).State = EntityState.Modified;
         }
-        public virtual void RemoveProdutoAntigo<T>() where T : Cardapio
+        public virtual async Task RemoveProdutoAntigo<T>() where T : Cardapio
         {
-            var lista = _context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString());
+            var lista = await _context.Set<T>().Where(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString()).ToListAsync();
             _context.Set<T>().RemoveRange((IEnumerable<T>)lista);
         }
-        public virtual void Desativar<T>(TEntity obj) where T : Cardapio
+        public virtual async Task Desativar<T>(TEntity obj) where T : Cardapio
         {
-            var item = _context.Set<T>().FirstOrDefault(e => e.Id == obj.Id);
+            var item = await _context.Set<T>().FirstOrDefaultAsync(e => e.Id == obj.Id);
             item.StatusCardapio = StatusCardapio.INATIVO;
+            _context.Set<T>().Update(item);
         }
-        IQueryable<T> IRepositoryBase<TEntity>.Ativos<T>()
+        async Task<IEnumerable<T>> IRepositoryBase<TEntity>.Ativos<T>()
         {
-            var query = _context.Set<T>()
-            .Where(x => x.StatusCardapio.Equals(StatusCardapio.ATIVO) && x.Data.ToShortDateString().Equals(DateTime.Now.ToShortDateString()));
-            return query.AsQueryable();
+            return await _context.Set<T>()
+            .Where(x => x.StatusCardapio.Equals(StatusCardapio.ATIVO) && x.Data.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+            .ToListAsync();
         }
 
-        public IQueryable<TEntity> GetByIds(int[] ids)
+        public async Task<IEnumerable<TEntity>> GetByIds(int[] ids)
         {
             List<TEntity> lista = new List<TEntity>();
-            foreach (var item in ids) lista.Add(GetById(item));
+            foreach (var item in ids) lista.Add(await GetById(item));
             return lista.AsQueryable();
         }
 
-        public TEntity GetOneWithPredicate(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity> GetOneWithPredicate(Expression<Func<TEntity, bool>> predicate)
         {
-            return _context.Set<TEntity>().Where(predicate).FirstOrDefault();
+            return await _context.Set<TEntity>().Where(predicate).FirstOrDefaultAsync();
         }
 
-        public IQueryable<TEntity> GetAnyWithPredicate(Expression<Func<TEntity, bool>> predicate)
+        public async Task<IEnumerable<TEntity>> GetAnyWithPredicate(Expression<Func<TEntity, bool>> predicate)
         {
-            return _context.Set<TEntity>().Where(predicate);
+            return await _context.Set<TEntity>().Where(predicate).ToListAsync();
         }
     }
 }

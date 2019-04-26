@@ -20,14 +20,14 @@ namespace Marmitex.Domain.Entidades
         public DateTime DataCadastro { get; private set; }
 
         public Cliente() { }
-        public Cliente(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        public Cliente(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
         {
             ValidationProperties(nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular);
-            SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
+            SetProperties(nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
         }
-        public void Update(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        public void Update(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
         {
-            SetProperties(id, nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
+            SetProperties(nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
         }
         private void ValidationProperties(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular)
         {
@@ -42,11 +42,11 @@ namespace Marmitex.Domain.Entidades
             if (celular != null && celular.Length > 0) ExceptionClass.Exec(celular.Length != 15, "Celular inválido");
         }
 
-        private void SetProperties(long id, string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        private void SetProperties(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
         {
             this.DataCadastro = dataCadastro;
-            if (id == 0) DataCadastro = DateTime.Now;
-            this.Id = id;
+            if (this.Id == 0) DataCadastro = DateTime.Now;
+            // this.Id = id;
             this.Nome = nome.Trim();
             this.Sobrenome = !string.IsNullOrEmpty(sobrenome) ? sobrenome.Trim() : null;
             this.Sexo = sexo;
