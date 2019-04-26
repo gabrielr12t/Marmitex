@@ -6,6 +6,8 @@ using AutoMapper;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Enums;
 using Marmitex.Domain.Interfaces;
+using Marmitex.Domain.Services.ClasseParaJson;
+using Marmitex.Domain.Services.Cookie;
 using Marmitex.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,33 +19,26 @@ namespace Marmitex.Web.Controllers
 {
     public class MarmitaController : Controller
     {
+        private readonly ICookieService _cookieService;
+        private readonly IJsonService _jsonService;
         private readonly IAcompanhamentoRepository _acompanhamentoRepository;
         private readonly ISaladaRepository _saladaRepository;
         private readonly IMapper _mapper;
         private readonly IMisturaRepository _misturaRepository;
 
-        public MarmitaController(IMisturaRepository misturaRepository,
+        public MarmitaController(ICookieService cookieService, IJsonService jsonService, IMisturaRepository misturaRepository,
         ISaladaRepository saladaRepository, IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper)
         {
+            _cookieService = cookieService;
+            _jsonService = jsonService;
             _acompanhamentoRepository = acompanhamentoRepository;
             _saladaRepository = saladaRepository;
             _mapper = mapper;
             _misturaRepository = misturaRepository;
         }
-        private string GetCookie(string cookie)
-        {
-            return Request.Cookies[cookie];
-        }
-        private void RemoveCookie(string keys)
-        {
-            Response.Cookies.Delete(keys);
-        }
-        private void RemoveCookies(List<string> keys)
-        {
-            foreach (var item in keys) Response.Cookies.Delete(item);
-        }
+
         //método para preencher classe
-        public async Task<MarmitaViewModel> MarmitaViewModelDB()
+        private async Task<MarmitaViewModel> MarmitaViewModelDB()
         {
             var marmitaViewModel = new MarmitaViewModel
             {
@@ -74,12 +69,14 @@ namespace Marmitex.Web.Controllers
         {
             try
             {
-                if (GetCookie("carrinho") == null) throw new Exception("Carrinho está vazio");
-                if (GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado");
-                var carrinho = JsonConvert.DeserializeObject<List<Marmita>>(GetCookie("carrinho"));
-                var cliente = JsonConvert.DeserializeObject<Cliente>(GetCookie("cliente"));
+                if (_cookieService.GetCookie("carrinho") == null) throw new Exception("Carrinho está vazio");
+                if (_cookieService.GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado");
 
-                RemoveCookies(new List<string> { "cliente", "carrinho" });//limpando cookie após a compra
+                var carrinho = _jsonService.AnyJsonToClass<Marmita>(_cookieService.GetCookie("carrinho"));
+                //var carrinho = JsonConvert.DeserializeObject<List<Marmita>>(GetCookie("carrinho"));
+                var cliente = _jsonService.OneJsonToClass<Cliente>(_cookieService.GetCookie("cliente"));
+
+                _cookieService.RemoveRange(new List<string> { "carrinho", "cliente" });//limpando cookie após a compra
                 ModelState.Clear();
                 return Ok(await MarmitaViewModelDB());
             }
