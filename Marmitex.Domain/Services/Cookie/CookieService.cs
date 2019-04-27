@@ -20,9 +20,9 @@ namespace Marmitex.Domain.Services.Cookie
                 option.Expires = DateTime.Now.AddMilliseconds(10);
             _context.HttpContext.Response.Cookies.Append(key, value, option);
         }
-        public string GetAllCookies()
+        public ICollection<string> GetAllCookies()
         {
-            return _context.HttpContext.Request.Cookies.ToString();
+            return _context.HttpContext.Request.Cookies.Keys;
         }
 
         public string GetCookie(string name)
@@ -37,7 +37,14 @@ namespace Marmitex.Domain.Services.Cookie
 
         public void RemoveRange(List<string> names)
         {
-            foreach (var item in names) _context.HttpContext.Response.Cookies.Delete(item);
+            foreach (var item in names)
+            {
+                _context.HttpContext.Response.Cookies.Delete(item);
+            }
+        }
+        public void removeAll()
+        {
+            foreach (var cookie in _context.HttpContext.Request.Cookies.Keys) _context.HttpContext.Response.Cookies.Delete(cookie);
         }
     }
 }

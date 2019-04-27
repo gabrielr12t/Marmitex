@@ -6,8 +6,10 @@ using AutoMapper;
 using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
+using Marmitex.Domain.Services.ClasseParaJson;
+using Marmitex.Domain.Services.Cookie;
 using Marmitex.Domain.Services.Email;
- using Marmitex.Web.ViewModels;
+using Marmitex.Web.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,15 +20,19 @@ namespace Marmitex.Web.Controllers
     {
         public const string MSG = @"Olá senhor Edson Romero, gostariamos de notificá-lo de muitos acessos a sua conta na qual identificamos possíveis hackers
             , por este motivo estaremos tentando enviar esta mensagem a você, obrigado pela colaboração !";
+        private readonly IJsonService _jsonService;
+        private readonly ICookieService _cookieService;
         private readonly ISaladaRepository _saladaRepository;
         private readonly IMisturaRepository _misturaRepository;
         private readonly IAcompanhamentoRepository _acompanhamentoRepository;
         private readonly IClienteRepository _clienteRepository;
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
-        public ClienteController(IEmailSender emailSender, IHostingEnvironment env, IClienteRepository clienteRepository, ISaladaRepository saladaRepository, IMisturaRepository misturaRepository,
+        public ClienteController(IEmailSender emailSender, IJsonService jsonService, ICookieService cookieService, IHostingEnvironment env, IClienteRepository clienteRepository, ISaladaRepository saladaRepository, IMisturaRepository misturaRepository,
         IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper)
         {
+            _jsonService = jsonService;
+            _cookieService = cookieService;
             _saladaRepository = saladaRepository;
             _emailSender = emailSender;
             _misturaRepository = misturaRepository;
@@ -51,6 +57,7 @@ namespace Marmitex.Web.Controllers
 
         public async Task<MarmitaViewModel> MarmitaViewModelDB()
         {
+            //método para fazer select das Misturas, Acompanhamentos e Saladas e colocando numa lista em um objeto marmita
             var marmitaViewModel = new MarmitaViewModel
             {
                 Saladas = _mapper.Map<List<SaladaViewModel>>(await _saladaRepository.Ativos<Salada>()),
@@ -65,6 +72,7 @@ namespace Marmitex.Web.Controllers
         {
             try
             {
+                if (_cookieService.GetCookie("cliente") != null) return RedirectToAction("Registro", "Marmita"); // ja tem cliente no cookie, direciona para compra
                 return View(await MarmitaViewModelDB());
             }
             catch (System.Exception e)
@@ -82,9 +90,14 @@ namespace Marmitex.Web.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(viewModel.Numero)) throw new Exception("Campo número é obrigatório");
-                var cliente = await _clienteRepository.GetClienteByTelefone(viewModel.Numero);
-                return string.IsNullOrEmpty(cliente.Nome) ? RedirectToAction(nameof(Cadastro), new { numero = viewModel.Numero }) : RedirectToAction("Registro", "Marmita", _mapper.Map<ClienteViewModel>(cliente));
+                if (string.IsNullOrEmpty(viewModel.Numero)) throw new Exception("Campo número é obrigatório");//verificando se número de telefone foi inserido
+                var cliente = await _clienteRepository.GetClienteByTelefone(viewModel.Numero);//select cliente by telefone               
+                if (!string.IsNullOrEmpty(cliente.Nome)) // verificando se encontrou cliente 
+                {
+                    _cookieService.SetCookie("cliente", _jsonService.OneClasseToJson(cliente), 10);//adicionando cookie do cliente com o objeto cliente                    
+                    return RedirectToAction("Registro", "Marmita");
+                }
+                return RedirectToAction(nameof(Cadastro), new { numero = viewModel.Numero });
             }
             catch (System.Exception e)
             {
@@ -98,7 +111,8 @@ namespace Marmitex.Web.Controllers
         {
             try
             {
-                var cliente = id > 0 ? await _clienteRepository.GetById(id)  : ((!string.IsNullOrEmpty(numero)) ? await _clienteRepository.GetClienteByTelefone(numero) : new Cliente());
+                //verificando se objeto possui id para buscar, senão verifica se ele preencheu o campo número e busca pelo número , senão cria objeto vazio
+                var cliente = id > 0 ? await _clienteRepository.GetById(id) : ((!string.IsNullOrEmpty(numero)) ? await _clienteRepository.GetClienteByTelefone(numero) : new Cliente());
                 return View(_mapper.Map<ClienteViewModel>(cliente));
             }
             catch (System.Exception e)
@@ -106,7 +120,6 @@ namespace Marmitex.Web.Controllers
                 ModelState.AddModelError(string.Empty, e.Message);
                 return View();
             }
-
         }
 
         [HttpPost]

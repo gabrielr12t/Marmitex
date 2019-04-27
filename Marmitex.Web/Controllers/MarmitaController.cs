@@ -19,6 +19,7 @@ namespace Marmitex.Web.Controllers
 {
     public class MarmitaController : Controller
     {
+        #region dependencias
         private readonly ICookieService _cookieService;
         private readonly IJsonService _jsonService;
         private readonly IAcompanhamentoRepository _acompanhamentoRepository;
@@ -26,20 +27,25 @@ namespace Marmitex.Web.Controllers
         private readonly IMapper _mapper;
         private readonly IMisturaRepository _misturaRepository;
 
+        #endregion
+
         public MarmitaController(ICookieService cookieService, IJsonService jsonService, IMisturaRepository misturaRepository,
         ISaladaRepository saladaRepository, IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper)
         {
+            #region dependency injection
             _cookieService = cookieService;
             _jsonService = jsonService;
             _acompanhamentoRepository = acompanhamentoRepository;
             _saladaRepository = saladaRepository;
             _mapper = mapper;
             _misturaRepository = misturaRepository;
+
+            #endregion
         }
 
-        //método para preencher classe
         private async Task<MarmitaViewModel> MarmitaViewModelDB()
         {
+            //método para fazer select das Misturas, Acompanhamentos e Saladas e colocando numa lista em um objeto marmita
             var marmitaViewModel = new MarmitaViewModel
             {
                 Saladas = _mapper.Map<List<SaladaViewModel>>(await _saladaRepository.Ativos<Salada>()),
@@ -51,11 +57,11 @@ namespace Marmitex.Web.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Registro(ClienteViewModel clienteViewModel = null)
+        public async Task<IActionResult> Registro()
         {
             try
             {
-                if (clienteViewModel == null) throw new Exception("Nenhum cliente selecionado");
+                if (_cookieService.GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado");// verificando se têm cliente no cookie["cliente"]
                 return View(await MarmitaViewModelDB());
             }
             catch (System.Exception e)
@@ -65,19 +71,17 @@ namespace Marmitex.Web.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Registro()
+        public async Task<IActionResult> Registro(int id)
         {
             try
             {
-                if (_cookieService.GetCookie("carrinho") == null) throw new Exception("Carrinho está vazio");
-                if (_cookieService.GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado");
+                if (_cookieService.GetCookie("carrinho") == null) throw new Exception("Carrinho está vazio"); // verificando se tem item no carrinho
+                if (_cookieService.GetCookie("cliente") == null) throw new Exception("Nenhum cliente selecionado"); // verificando se têm cliente no cookie["cliente"]
 
-                var carrinho = _jsonService.AnyJsonToClass<Marmita>(_cookieService.GetCookie("carrinho"));
-                //var carrinho = JsonConvert.DeserializeObject<List<Marmita>>(GetCookie("carrinho"));
-                var cliente = _jsonService.OneJsonToClass<Cliente>(_cookieService.GetCookie("cliente"));
+                var carrinho = _jsonService.AnyJsonToClass<Marmita>(_cookieService.GetCookie("carrinho"));//convertendo array de json para lista de objeto Marmita
+                var cliente = _jsonService.OneJsonToClass<Cliente>(_cookieService.GetCookie("cliente")); // convertendo json cliente para objeto cliente
 
-                _cookieService.RemoveRange(new List<string> { "carrinho", "cliente" });//limpando cookie após a compra
-                ModelState.Clear();
+                _cookieService.RemoveRange(new List<string> { "carrinho", "cliente" }); //limpando cookie da página após a compra
                 return Ok(await MarmitaViewModelDB());
             }
             catch (Exception e)

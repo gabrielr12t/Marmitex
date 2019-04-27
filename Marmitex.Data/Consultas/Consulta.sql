@@ -1,5 +1,5 @@
 
  
-SELECT * From Misturas
+select * FROM Misturas
  
  

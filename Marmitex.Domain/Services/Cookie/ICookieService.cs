@@ -8,6 +8,7 @@ namespace Marmitex.Domain.Services.Cookie
         void Remove(string nome);
         void RemoveRange(List<string> names);
         string GetCookie(string name);
-        string GetAllCookies( );
+        ICollection<string> GetAllCookies();
+        void removeAll();
     }
 }
