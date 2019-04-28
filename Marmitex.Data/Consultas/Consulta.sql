@@ -1,5 +1,4 @@
 
- 
-select * FROM Misturas
+drop DATABASE Marmitex
  
  

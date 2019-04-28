@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Enums;
 
 namespace Marmitex.Web.ViewModels
@@ -29,6 +30,8 @@ namespace Marmitex.Web.ViewModels
 
         public string Observacao { get; set; }
 
+        public Cliente Cliente { get; set; }
+
         // listas
 
         public virtual IEnumerable<AcompanhamentoViewModel> Acompanhamentos { get; set; }
@@ -45,6 +48,7 @@ namespace Marmitex.Web.ViewModels
             Acompanhamentos = new List<AcompanhamentoViewModel>();
             Saladas = new List<SaladaViewModel>();
             Misturas = new List<MisturaViewModel>();
+            Cliente = new Cliente();
             // Marmitas =as Enumerable<MarmitaViewModel>().AsQueryable();
         }
     }

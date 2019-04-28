@@ -53,7 +53,6 @@ namespace Marmitex.Domain.Entidades
             Acompanhamentos = acompanhamentos;
             ValidateProperties(mistura);
 
-
         }
 
         private void ValidateProperties(Mistura mistura)

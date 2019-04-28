@@ -17,7 +17,7 @@ namespace Marmitex.Domain.Entidades
         public string NumeroCasa { get; set; }
         public string Telefone { get; set; }
         public string Celular { get; set; }
-        public DateTime DataCadastro { get; private set; }
+        public DateTime DataCadastro { get; set; }
 
         public Cliente() { }
         public Cliente(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)

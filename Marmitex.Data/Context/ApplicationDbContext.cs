@@ -16,6 +16,10 @@ namespace Marmitex.Data.Context
         public DbSet<MarmitaAcompanhamento> MarmitaAcompanhamentos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Cliente>()
+            .HasIndex(p => new { p.Telefone, p.Celular })
+            .IsUnique(true);
+
             base.OnModelCreating(modelBuilder);
         }
     }

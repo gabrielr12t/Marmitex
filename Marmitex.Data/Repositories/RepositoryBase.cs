@@ -24,7 +24,11 @@ namespace Marmitex.Data.Repositories
         public virtual async Task Add(TEntity obj)
         {
             var item = await GetById(obj.Id);
-            if (item == null) _context.Set<TEntity>().Add(obj);           
+            if (item == null)
+            {
+                _context.Set<TEntity>().Add(obj);
+                return;
+            }
             _context.Entry(obj).State = EntityState.Modified;
         }
         public virtual async Task<IEnumerable<TEntity>> GetAll()

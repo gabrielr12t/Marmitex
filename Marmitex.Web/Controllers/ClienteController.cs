@@ -39,7 +39,6 @@ namespace Marmitex.Web.Controllers
             _acompanhamentoRepository = acompanhamentoRepository;
             _clienteRepository = clienteRepository;
             _mapper = mapper;
-
         }
         // -----
         public async Task EnviarEmail(string email, string assunto, string mensagem)
@@ -72,7 +71,7 @@ namespace Marmitex.Web.Controllers
         {
             try
             {
-                if (_cookieService.GetCookie("cliente") != null) return RedirectToAction("Registro", "Marmita"); // ja tem cliente no cookie, direciona para compra
+                if (_cookieService.GetCookie("cliente") != null) return RedirectToAction("Registro", "Marmita"); //se ja tem cliente no cookie, direciona para compra
                 return View(await MarmitaViewModelDB());
             }
             catch (System.Exception e)
@@ -94,7 +93,7 @@ namespace Marmitex.Web.Controllers
                 var cliente = await _clienteRepository.GetClienteByTelefone(viewModel.Numero);//select cliente by telefone               
                 if (!string.IsNullOrEmpty(cliente.Nome)) // verificando se encontrou cliente 
                 {
-                    _cookieService.SetCookie("cliente", _jsonService.OneClasseToJson(cliente), 10);//adicionando cookie do cliente com o objeto cliente                    
+                    _cookieService.SetCookie("cliente", _jsonService.OneClasseToJson(cliente), 20);//adicionando cookie do cliente com o objeto cliente                    
                     return RedirectToAction("Registro", "Marmita");
                 }
                 return RedirectToAction(nameof(Cadastro), new { numero = viewModel.Numero });
@@ -107,7 +106,7 @@ namespace Marmitex.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Cadastro(int id, string numero = null)
+        public async Task<IActionResult> Cadastro([FromQuery(Name = "ReturnURL")] string page, int id, string numero = null)
         {
             try
             {
@@ -124,15 +123,17 @@ namespace Marmitex.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Cadastro(ClienteViewModel clienteViewModel)
+        public async Task<IActionResult> Cadastro([FromQuery(Name = "ReturnURL")] string page, ClienteViewModel clienteViewModel)
         {
             try
             {
-                var cliente = _mapper.Map<Cliente>(clienteViewModel);
-                await _clienteRepository.Add(cliente);
-                ModelState.Clear();
+                var cliente = _mapper.Map<Cliente>(clienteViewModel);//converter objeto clienteViewModel para cliente
+                await _clienteRepository.Add(cliente);//adicionando cliente
+                _cookieService.SetCookie("cliente", _jsonService.OneClasseToJson<Cliente>(cliente), 20);//adicionando cookie cliente
+
+                if (!string.IsNullOrEmpty(page))// verificando se cliente está comprando e decide editar os dados 
+                    return RedirectToAction("Registro", "Marmita");//depois de salvar os dados, redirecionar de volta para marmita
                 return RedirectToAction(nameof(Listar));
-                //return RedirectToAction("Registro", "Marmita", clienteViewModel);
             }
             catch (Exception e)
             {
@@ -144,18 +145,17 @@ namespace Marmitex.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Listar()
         {
-            var clientes = await _clienteRepository.GetAll();
-            var mappedCliente = _mapper.Map<List<ClienteViewModel>>(clientes);
+            var clientes = await _clienteRepository.GetAll();//pegando todos clientes
+            var mappedCliente = _mapper.Map<List<ClienteViewModel>>(clientes); //objecto cliente para clienteviewmodel
             return mappedCliente.Any() ? View(mappedCliente) : View(new List<ClienteViewModel>());
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int Id)
         {
-            var cliente = await _clienteRepository.GetById(Id);
-            if (cliente != null) _clienteRepository.Remove(cliente);
-            return cliente != null ? Ok(cliente) : null;
+            var cliente = await _clienteRepository.GetById(Id);//pegando cliente
+            if (cliente != null) _clienteRepository.Remove(cliente);//removendo cliente
+            return cliente != null ? Ok(cliente) : null;//retornando
         }
-
     }
 }

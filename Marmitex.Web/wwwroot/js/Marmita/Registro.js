@@ -80,7 +80,7 @@
 // 	return obj;
 // }
 
- 
+
 // -----
 // ==============================================
 // -------------------------- $$$$$$$$$$$$$$$$$$$$$$$ ----------------------------------------------
@@ -115,10 +115,7 @@ function VerificaMistura() {
 }
 
 $(document).ready(function () {
-
-	GetCLienteTeste();
-
-	var cliente = GetCookie('cliente');
+	//var cliente = GetCookie('cliente');
 	var cart = GetCookie('carrinho');
 	if (cart != null) itens = $.parseJSON(cart);
 	// if (cliente == null) SetCookie('cliente', GetCliente())
@@ -234,29 +231,62 @@ function VerificarSeBotaoExiste(id) {
 	return false;
 }
 
+function ConfimarCompra() {
+	if (itens.length == 0) alert('carrinho vazio');
+	$.ajax({
+		dataType: "json",
+		type: "POST",
+		url: '/Marmita/Registro',
+		data: {
+			'marmitas': itens
+		},
+		success: function (dados) {
+			itens = []
+			ExibeCart();
+			alert('Compra finalizada')
+
+		},
+		error: function (error) {
+			alert('Erro')
+		}
+	});
+}
+
+// "<div class='custom-control custom-switch1>" +
+// 	"<input type='checkbox' class='custom-control-input' id='switch1' name='entrega'>" +
+// 	"<label class='custom-control-label' for='switch1'>Retirar no local</label>" +
+// 	"</div>"
+
+var conteudo = "<label class='switch'>" +
+	"<input type='checkbox'>" +
+	"<span class='slider round'></span>" +
+	"</label><label> Retirar no local</n>";
+const wrapper = document.createElement('div');
+wrapper.innerHTML = conteudo;
+
 function createButton(id, classe, texto, local) {
 	var element = document.createElement("button");
 	element.className = classe;
 	element.id = id;
 	element.onclick = function () {
-		if (itens.length == 0) alert('carrinho vazio');
-		$.ajax({
-			dataType: "json",
-			type: "POST",
-			url: '/Marmita/Registro',
-			data: {
-				'marmitas': itens
-			},
-			success: function (dados) {
-				itens = []
-				ExibeCart();
-				alert('Compra finalizada')
-
-			},
-			error: function (error) {
-				alert('Erro')
-			}
-		});
+		swal({
+			title: "Vamos finalizar a compra?",
+			//text: "Once deleted, you will not be able to recover this imaginary file!",
+			content: wrapper,
+			icon: "success",
+			buttons: ["Cancelar", "Finalizar"],
+			dangerMode: false,
+		})
+			.then((willDelete) => {
+				if (willDelete) {
+					//chamar ajax aqui
+					swal("Certo, compra finalizada", {
+						icon: "success",
+					});
+				} else {
+					swal("Ok, nada de finalizar!");
+				}
+			});
 	};
 	element.appendChild(document.createTextNode(texto));
 	var page = document.getElementById(local);

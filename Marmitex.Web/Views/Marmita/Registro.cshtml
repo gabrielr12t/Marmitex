@@ -3,13 +3,14 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="~/css/RegistroMarmito.css" />
 
 
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
 
-
 <!-- <div class="alert alert-danger">
-    <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action.
+  <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action.
 </div> -->
 
 <style>
@@ -17,129 +18,205 @@
     height: auto;/*Altura da linha*/
     border-left: 0.3px solid;/* Adiciona borda esquerda na div como ser fosse uma linha.*/
   }
-
+  
   .espaco-input{
     margin-left: 10px;
   }
+
+  .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
 </style>
- 
-<div class="container">
-  <p>Selecione os itens que o cliente pedir</p>
-  <hr>
-  <form asp-controller="Marmita" asp-action="Registro">
-    <div asp-validation-summary="ModelOnly" class="text-danger">
-      <div class="alert alert-danger">
-        <strong>Erro!</strong> Ocorreu um erro durante a execução, tente novamente.
-      </div> 
-    </div>
-    <h3>Escolha uma mistura do dia</h3>
-    @if (Model.Misturas.Any())
-    {
-      @foreach (var item in Model.Misturas)
-      {
-        <div class="custom-control linha-vertical custom-radio custom-control-inline">
-          <input acrescimo="@item.AcrescimoValor" type="radio" class="custom-control-input " asp-for="Mistura" id="@item.Nome" value=@item.Id name="misturaId">            
-          <label class="custom-control-label espaco-input" for="@item.Nome">@item.Nome</label>                        
-        </div>
-        <label id="ValorAcrescimo"><b><i class="fa fa-plus"></i> R$</b> @item.AcrescimoValor</label>
-      }
-    }else{
-      <div class="alert alert-warning">
-        <strong>Opa!</strong> Não há misturas cadastradas hoje!
-        <a href="/Mistura/Registro" class="btn btn-link">Cadastrar agora</a>
-      </div> 
-    }
-    <span class="text-danger" id="MisturaErro" asp-validation-for="Mistura"></span>
+
+<div class="row">
+  <div class="col col-lg-9">
+    <p>Selecione os itens que o cliente pedir</p>
     <hr>
-    <h3>Escolha dois acompanhamentos do dia</h3>
-    @if (Model.Acompanhamentos.Any())
-    {
-      @foreach (var item in Model.Acompanhamentos)
+    <form asp-controller="Marmita" asp-action="Registro">
+      <div asp-validation-summary="ModelOnly" class="text-danger">
+        <div class="alert alert-danger">
+          <strong>Erro!</strong> Ocorreu um erro durante a execução, tente novamente.
+        </div> 
+      </div>
+      <h3>Escolha uma mistura do dia</h3>
+      @if (Model.Misturas.Any())
       {
-        <div class="custom-control custom-checkbox mb-3">
-          <input type="checkbox" class="custom-control-input acompanhamento" id="@item.Nome" value=@item.Id name="selectAcompanhamentos">
-          <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
-        </div>
-      }
-    }else{
-      <div class="alert alert-warning">
-        <strong>Opa!</strong> Não há acompanhamentos cadastrados hoje!
-        <a href="/Acompanhamento/Registro" class="btn btn-link">Cadastrar agora</a>
-      </div>      
-    }
-    <hr>
-    <h3>Escolha uma salada do dia</h3>
-    @if (Model.Saladas.Any())
-    {
-      <div id="radios">
-        @foreach (var item in Model.Saladas)
+        @foreach (var item in Model.Misturas)
         {
-          <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="@item.Nome" value=@item.Id name="saladaId">
+          <div class="custom-control linha-vertical custom-radio custom-control-inline">
+            <input acrescimo="@item.AcrescimoValor" type="radio" class="custom-control-input " asp-for="Mistura" id="@item.Nome" value=@item.Id name="misturaId">            
+            <label class="custom-control-label espaco-input" for="@item.Nome">@item.Nome</label>                        
+          </div>
+          <label id="ValorAcrescimo"><b><i class="fa fa-plus"></i> R$</b> @item.AcrescimoValor</label>
+        }
+      }else{
+        <div class="alert alert-warning">
+          <strong>Opa!</strong> Não há misturas cadastradas hoje!
+          <a href="/Mistura/Registro" class="btn btn-link">Cadastrar agora</a>
+        </div> 
+      }
+      <span class="text-danger" id="MisturaErro" asp-validation-for="Mistura"></span>
+      <hr>
+      <h3>Escolha dois acompanhamentos do dia</h3>
+      @if (Model.Acompanhamentos.Any())
+      {
+        @foreach (var item in Model.Acompanhamentos)
+        {
+          <div class="custom-control custom-checkbox mb-3">
+            <input type="checkbox" class="custom-control-input acompanhamento" id="@item.Nome" value=@item.Id name="selectAcompanhamentos">
             <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
           </div>
         }
+      }else{
+        <div class="alert alert-warning">
+          <strong>Opa!</strong> Não há acompanhamentos cadastrados hoje!
+          <a href="/Acompanhamento/Registro" class="btn btn-link">Cadastrar agora</a>
+        </div>      
+      }
+      <hr>
+      <h3>Escolha uma salada do dia</h3>
+      @if (Model.Saladas.Any())
+      {
+        <div id="radios">
+          @foreach (var item in Model.Saladas)
+          {
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" id="@item.Nome" value=@item.Id name="saladaId">
+              <label class="custom-control-label" for="@item.Nome">@item.Nome</label>
+            </div>
+          }
+        </div>
+      }else{
+        <div class="alert alert-warning">
+          <strong>Opa!</strong> Não há salada cadastrada hoje!
+          <a href="/Salada/Registro" class="btn btn-link">Cadastrar agora</a>
+        </div>      
+      }
+      
+      <hr>
+      <h3>Observações: </h3>
+      <div class="md-form mb-4 pink-textarea active-pink-textarea">
+        <textarea name="observacao" id="obs"  placeholder="Ex: marmita com pouco feijão" class="md-textarea form-control" rows="3"></textarea>
       </div>
-    }else{
-      <div class="alert alert-warning">
-        <strong>Opa!</strong> Não há salada cadastrada hoje!
-        <a href="/Salada/Registro" class="btn btn-link">Cadastrar agora</a>
-      </div>      
-    }
+      <hr>    
+      <div class="form-group">
+        <label>Tamanho:</label>
+        <select asp-for="Tamanho" name="tamanho" class="form-control" id="tamanho" asp-items="Html.GetEnumSelectList<Marmitex.Domain.Enums.Tamanho>()"></select>      
+          <span class="text-danger" asp-validation-for="Tamanho"></span>
+        </div>
         
-    <hr>
-    <h3>Observações: </h3>
-    <div class="md-form mb-4 pink-textarea active-pink-textarea">
-      <textarea name="observacao" id="obs"  placeholder="Ex: marmita com pouco feijão" class="md-textarea form-control" rows="3"></textarea>
+        <br>
+        <!-- <button type="submit" name="btn" value="Adicionar" class="btn btn-primary">Adicionar</button> -->
+        <a href="#" onclick="AddCarrinho();" class="btn btn-success">Adicionar</a>
+        <!-- <button type="submit" name="btn" value="Finalizar" class="btn btn-success">Finalizar</button> -->
+        <br>
+      </form>
     </div>
-    <hr>    
-    <div class="form-group">
-      <label>Tamanho:</label>
-      <select asp-for="Tamanho" name="tamanho" class="form-control" id="tamanho" asp-items="Html.GetEnumSelectList<Marmitex.Domain.Enums.Tamanho>()"></select>      
-      <span class="text-danger" asp-validation-for="Tamanho"></span>
+    <div class=" col-lg-3">
+      <div class="card">
+        <img src="https://www.w3schools.com/w3images/team2.jpg"  style="width:100%">
+        <h1>@Model.Cliente.Nome</h1>
+        <p class="title-Cliente">Cliente desde: @Model.Cliente.DataCadastro.ToShortDateString()</p>
+        <p><b>Telefone:</b> @Model.Cliente.Telefone</p>       
+        <p><b>Celular:</b> @Model.Cliente.Celular</p> 
+        <hr >
+        <h5 class="mt-0 text-primary">Endereço</h5>      
+        <p><b>Endereço:</b> @Model.Cliente.Rua</p>       
+        <p><b>Bairro:</b> @Model.Cliente.Bairro</p>       
+        <p><b>Número da casa:</b> @Model.Cliente.NumeroCasa</p>       
+        <p><b>Número da rua:</b> @Model.Cliente.RuaNumero</p>       
+        <p><button class="cartao" onclick="location.href = '../Cliente/Cadastro/@Model.Cliente.Id?ReturnURL=Marmita';">Editar cliente</button></p>
+      </div>
+    </div>  
+  </div>
+  
+  <!-- popup -->
+  
+  <button class="open-button" onclick="openForm()">Carrinho  <span class="w3-badge"></span></button>
+  
+  <div class="chat-popup" id="myForm">
+    <div class="form-container" id="itens-carrinho">
+      <h3>Itens <i class="fa fa-shopping-cart"></i></h3><hr>   
+      <div class="wrapper">
+        <!-- itens do carrinho -->
+      </div>    
+      
+      <button type="button" id="minimizar" class="btn cancel" onclick="closeForm()">Minimizar</button>
     </div>
-    <div class="custom-control custom-switch">
-      <input type="checkbox" class="custom-control-input" id="switch1" name="entrega">
-      <label class="custom-control-label" for="switch1">Retirar no local</label>
-    </div>    
-    <br>
-    <!-- <button type="submit" name="btn" value="Adicionar" class="btn btn-primary">Adicionar</button> -->
-    <a href="#" onclick="AddCarrinho();" class="btn btn-success">Adicionar</a>
-    <!-- <button type="submit" name="btn" value="Finalizar" class="btn btn-success">Finalizar</button> -->
-    <br>
-  </form>
-</div>
-
-<!-- popup -->
-
-<button class="open-button" onclick="openForm()">Carrinho  <span class="w3-badge"></span></button>
-
-<div class="chat-popup" id="myForm">
-   <div class="form-container" id="itens-carrinho">
-    <h3>Itens <i class="fa fa-shopping-cart"></i></h3><hr>   
-    <div class="wrapper">
-      <!-- itens do carrinho -->
-    </div>    
-             
-    <button type="button" id="minimizar" class="btn cancel" onclick="closeForm()">Minimizar</button>
-   </div>
-</div>
-
-<script>
+  </div>
+  
+  <script>
     function openForm() {
-        document.getElementById("myForm").style.display = "block";  
+      document.getElementById("myForm").style.display = "block";  
     }
     function closeForm() {
-        document.getElementById("myForm").style.display = "none";
+      document.getElementById("myForm").style.display = "none";
     }
-</script>
-
-@section Scripts {
-  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-
-<script src="~/js/Marmita/Registro.js"></script>
-
- 
+  </script>
+  
+  @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+  }
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  
+  <script src="~/js/Marmita/Registro.js"></script>
+  
+  
