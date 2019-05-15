@@ -26,20 +26,23 @@ namespace Marmitex.Web.Controllers
         private readonly ISaladaRepository _saladaRepository;
         private readonly IMapper _mapper;
         private readonly IMisturaRepository _misturaRepository;
+        private readonly IMarmitaRepository _marmitaRepository;
+        private readonly IPedidoRepository _pedidoRepository;
 
         #endregion
 
-        public MarmitaController(ICookieService cookieService, IJsonService jsonService, IMisturaRepository misturaRepository,
-        ISaladaRepository saladaRepository, IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper)
+        public MarmitaController(ICookieService cookieService, IMarmitaRepository marmitaRepository, IJsonService jsonService, IMisturaRepository misturaRepository,
+        ISaladaRepository saladaRepository, IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper, IPedidoRepository pedidoRepository)
         {
             #region dependency injection
-
+            _marmitaRepository = marmitaRepository;
             _cookieService = cookieService;
             _jsonService = jsonService;
             _acompanhamentoRepository = acompanhamentoRepository;
             _saladaRepository = saladaRepository;
             _mapper = mapper;
             _misturaRepository = misturaRepository;
+            _pedidoRepository = pedidoRepository;
 
             #endregion
         }
@@ -88,13 +91,28 @@ namespace Marmitex.Web.Controllers
                 VerifyCookies();
                 var carrinho = _jsonService.AnyJsonToClass<Marmita>(_cookieService.GetCookie("carrinho"));//convertendo array de json para lista de objeto Marmita
                 var cliente = _jsonService.OneJsonToClass<Cliente>(_cookieService.GetCookie("cliente")); // convertendo json cliente para objeto cliente
+                await _marmitaRepository.FinalizandoPedido(carrinho, cliente, new Pedido());//método que insere todas tabelas de compra
                 _cookieService.RemoveRange(new List<string> { "carrinho", "cliente" }); //limpando cookie da página após a compra
-                return Ok(await MarmitaViewModelDB());
+                return RedirectToAction("Index", "Cliente");// redirecionar para página de pedidos
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("", e.Message);
-                return View(await MarmitaViewModelDB());
+                ModelState.AddModelError(string.Empty, e.Message);
+                return RedirectToAction("Index", "Registro");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult CancelarCompra()
+        {
+            try
+            {
+                _cookieService.RemoveRange(new List<string> { "carrinho", "cliente" });
+                return Json(new { success = true, responseText = "Compra cancelada!" });
+            }
+            catch (System.Exception)
+            {
+                return Json(new { success = false, responseText = "Não foi possível cancelar a compra." });
             }
         }
     }

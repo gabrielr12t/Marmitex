@@ -13,26 +13,26 @@ namespace Marmitex.Data.Repositories
         public ClienteRepository(ApplicationDbContext context) : base(context) { }
         public override async Task Add(Cliente obj)
         {
-            Cliente cliente = await GetById(obj.Id);
+            var cliente = await GetById(obj.Id);
 
             if (cliente == null)
             {
                 //create
-                cliente = new Cliente(obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua,
+                cliente = new Cliente(obj.Nome, obj.Sexo, obj.Cep, obj.Rua,
                 obj.RuaNumero, obj.Bairro, obj.NumeroCasa, obj.Telefone, obj.Celular, DateTime.Now);
                 _context.Clientes.Add(cliente);
                 return;
             }
             //update                
-            cliente.Update(obj.Nome, obj.Sobrenome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa,
+            cliente.Update(obj.Nome, obj.Sexo, obj.Cep, obj.Rua, obj.RuaNumero, obj.Bairro, obj.NumeroCasa,
             obj.Telefone, obj.Celular, cliente.DataCadastro);
-            _context.Clientes.Update(cliente);
+            //_context.Clientes.Update(cliente);
         }
 
         public IQueryable<Pedido> ClientePedidos(int id)
         {
             var query = _context.Set<Pedido>().Include(p => p.Cliente).Where(c => c.Cliente.Id == id);
-            return query.Any() ? query.AsQueryable() : null;
+            return query.Any() ? query : null;
         }
 
         public async Task<Cliente> GetClienteByTelefone(string telefone)

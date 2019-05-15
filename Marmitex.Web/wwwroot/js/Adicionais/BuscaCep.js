@@ -42,7 +42,7 @@ $(document).ready(function() {
             else {
               //CEP pesquisado não foi encontrado.
               limpa_formulário_cep();
-              alert("CEP não encontrado.");
+              swal("Opa!", "Cep não encontrado!", "warning");
             }
           }
         );
@@ -50,7 +50,7 @@ $(document).ready(function() {
       else {
         //cep é inválido.
         limpa_formulário_cep();
-        alert("Formato de CEP inválido.");
+        swal("Opa!", "Cep inválido!", "danger");
       }
     } //end if.
     else {

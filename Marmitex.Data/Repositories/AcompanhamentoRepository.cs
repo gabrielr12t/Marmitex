@@ -24,7 +24,6 @@ namespace Marmitex.Data.Repositories
             }
             //update
             acompanhamento.Update(obj.Nome, acompanhamento.Data);
-            _context.Acompanhamentos.Update(acompanhamento);
         }
     }
 }

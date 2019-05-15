@@ -24,7 +24,7 @@ namespace Marmitex.Data.Repositories
             }
             //update
             salada.Update(obj.Nome, salada.Data);
-            _context.Saladas.Update(salada);
+            //_context.Saladas.Update(salada);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Marmitex.Web.ViewModels
     {
         public long Id { get; set; }
         [Required(ErrorMessage = "Insira o nome da mistura")]
-        [MinLength(3, ErrorMessage = "Tamanho mínimo de 3 letras"), MaxLength(18, ErrorMessage = "Tamanho máximo de 18 letras")]
+        [MinLength(3, ErrorMessage = "Tamanho mínimo de 3 letras"), MaxLength(25, ErrorMessage = "Tamanho máximo de 25 letras")]
         public string Nome { get; set; }
 
         public DateTime Data { get; set; }

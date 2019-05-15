@@ -49,6 +49,6 @@ namespace Marmitex.Web.ViewModels
         public string Celular { get; set; }
 
 
-    
+
     }
 }

@@ -23,7 +23,7 @@ namespace Marmitex.Data.Repositories
             }
             //update
             mistura.Update(obj.Nome, obj.AcrescimoValor, mistura.Data);
-            _context.Misturas.Update(mistura);
+            //_context.Misturas.Update(mistura);
         }
     }
 }

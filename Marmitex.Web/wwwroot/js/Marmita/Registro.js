@@ -1,7 +1,6 @@
+var marcados = 0;
 (function () {
 	"use strict";
-
-	var marcados = 0;
 	var verifyCheckeds = function ($checks) {
 		if (marcados >= 2) {
 			loop($checks, function ($element) {
@@ -36,53 +35,6 @@
 		verifyCheckeds($checks);
 	}
 }());
-
-
-// function GetCliente(url) {
-// 	var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
-// 	var obj = {};
-
-// 	if (queryString) {
-// 		queryString = queryString.split('#')[0];
-// 		var arr = queryString.split('&');
-
-// 		for (var i = 0; i < arr.length; i++) {
-// 			var a = arr[i].split('=');
-// 			var paramName = a[0];
-// 			var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
-
-// 			paramName = paramName.toLowerCase();
-// 			if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
-
-// 			if (paramName.match(/\[(\d+)?\]$/)) {
-// 				var key = paramName.replace(/\[(\d+)?\]/, '');
-// 				if (!obj[key]) obj[key] = [];
-
-// 				if (paramName.match(/\[\d+\]$/)) {
-// 					var index = /\[(\d+)\]/.exec(paramName)[1];
-// 					obj[key][index] = paramValue;
-// 				} else {
-// 					obj[key].push(paramValue);
-// 				}
-// 			} else {
-// 				if (!obj[paramName]) {
-// 					obj[paramName] = paramValue;
-// 				} else if (obj[paramName] && typeof obj[paramName] === 'string') {
-// 					obj[paramName] = [obj[paramName]];
-// 					obj[paramName].push(paramValue);
-// 				} else {
-// 					obj[paramName].push(paramValue);
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	return obj;
-// }
-
-
-// -----
-// ==============================================
 // -------------------------- $$$$$$$$$$$$$$$$$$$$$$$ ----------------------------------------------
 // carrinho
 
@@ -111,18 +63,15 @@ function VerificaMistura() {
 		return true;
 	}
 	return false;
-
 }
 
 $(document).ready(function () {
-	//var cliente = GetCookie('cliente');
 	var cart = GetCookie('carrinho');
 	if (cart != null) itens = $.parseJSON(cart);
-	// if (cliente == null) SetCookie('cliente', GetCliente())
 	ExibeCart();
 });
 
-function AddCarrinho() {
+async function AddCarrinho() {
 	if (VerificaMistura() == true) return false;
 	$("#MisturaErro").html("")
 
@@ -154,7 +103,8 @@ function AddCarrinho() {
 		{
 			"mistura": {
 				"id": misturaId,
-				"nome": mistura
+				"nome": mistura,
+				"acrescimoValor": acrescimo != null ? acrescimo : 0
 			},
 			"acompanhamentos": acompanhamentos.length != 0 ? acompanhamentos : [],
 			"salada": {
@@ -164,13 +114,12 @@ function AddCarrinho() {
 			"tamanho": tamanho,
 			"observacao": observacao != null ? observacao : "",
 			"valor": valorUnitario,
-			"acrescimo": acrescimo != null ? acrescimo : ""
 		}
 	);
-
-	RemoveCookie('carrinho');
-	SetCookie('carrinho', itens);
-	ExibeCart();
+	await LimparForm();
+	await RemoveCookie('carrinho');
+	await SetCookie('carrinho', itens);
+	await ExibeCart();
 }
 
 
@@ -193,7 +142,18 @@ function ExibeCart() {
 	if (itens.length > 0) {
 		$(itens).each(function (index, value) {
 			valorTotal += value.valor;
-			acompanhamentos = value.acompanhamentos.length > 0 ? value.acompanhamentos[0].nome + ', ' + value.acompanhamentos[1].nome : 'Sem acompanhamentos ';
+			if (value.acompanhamentos.length > 0) {
+				acompanhamentos = '';
+				if (value.acompanhamentos[0] != null) {
+					acompanhamentos = value.acompanhamentos[0].nome.toString();
+				}
+				if (value.acompanhamentos[1] != null) {
+					acompanhamentos += ', ' + value.acompanhamentos[1].nome.toString();
+				}
+			} else {
+				acompanhamentos = 'sem acompanhamento'
+			}
+			//acompanhamentos = value.acompanhamentos.length > 0 ? value.acompanhamentos[0].nome.length > 0 ? + ', ' + value.acompanhamentos[1].nome.toString() : 'Sem acompanhamentos ';
 			salada = value.salada.nome != "" ? value.salada.nome : 'Sem salada';
 			HTMLString += '<label><a href="#" onclick="RemoveItem(' + index + ');">'
 			HTMLString += '<i class="fa fa-trash"></i></a> ' + value.mistura.nome + ', (' + acompanhamentos + '), ' + salada + ','
@@ -207,7 +167,6 @@ function ExibeCart() {
 		HTMLString = '<span class="text-danger">Carrinho vazio</span><br><br>';
 		DeletarBotaoFinalizar();
 	}
-
 	wrapper.innerHTML = HTMLString;
 }
 
@@ -244,7 +203,6 @@ function ConfimarCompra() {
 			itens = []
 			ExibeCart();
 			alert('Compra finalizada')
-
 		},
 		error: function (error) {
 			alert('Erro')
@@ -252,18 +210,11 @@ function ConfimarCompra() {
 	});
 }
 
-// "<div class='custom-control custom-switch1>" +
-// 	"<input type='checkbox' class='custom-control-input' id='switch1' name='entrega'>" +
-// 	"<label class='custom-control-label' for='switch1'>Retirar no local</label>" +
-// 	"</div>"
 
-var conteudo = "<label class='switch'>" +
-	"<input type='checkbox'>" +
-	"<span class='slider round'></span>" +
-	"</label><label> Retirar no local</n>";
 const wrapper = document.createElement('div');
-wrapper.innerHTML = conteudo;
 
+
+//finalizar a compra
 function createButton(id, classe, texto, local) {
 	var element = document.createElement("button");
 	element.className = classe;
@@ -274,17 +225,33 @@ function createButton(id, classe, texto, local) {
 			//text: "Once deleted, you will not be able to recover this imaginary file!",
 			content: wrapper,
 			icon: "success",
-			buttons: ["Cancelar", "Finalizar"],
+			buttons: true,
 			dangerMode: false,
 		})
 			.then((willDelete) => {
 				if (willDelete) {
-					//chamar ajax aqui
-					swal("Certo, compra finalizada", {
-						icon: "success",
+
+					$.ajax({
+						type: "POST",
+						url: '/Marmita/Registro',
+						success: function (data) {
+							swal(data.responseText, {
+								icon: "success",
+							}).then(ok => {
+								if (ok) {
+
+									Reload();
+								} else {
+									Reload();
+								}
+							});
+						},
+						error: function (error) {
+							swal(error.responseText);
+						}
 					});
 				} else {
-					swal("Ok, nada de finalizar!");
+					swal("Ok, vamos continuar com a compra!");
 				}
 			});
 	};
@@ -293,3 +260,91 @@ function createButton(id, classe, texto, local) {
 	page.appendChild(element);
 }
 
+function CancelarCompra() {
+	swal({
+		title: "Deseja cancelar a compra?",
+		//text: "Once deleted, you will not be able to recover this imaginary file!",
+		content: "Isso excluirá o carrinho de compra também !",
+		icon: "warning",
+		buttons: true,
+		dangerMode: false,
+	})
+		.then((willDelete) => {
+			if (willDelete) {
+				$.ajax({
+					type: "POST",
+					url: '/Marmita/CancelarCompra',
+					success: function (data) {
+						swal(data.responseText, {
+							icon: "success",
+						}).then(ok => {
+							if (ok) {
+								Reload();
+							} else {
+								Reload();
+							}
+						});
+					},
+					error: function (error) {
+						swal(error.responseText);
+					}
+				});
+			} else {
+				swal("Ok, vamos continuar com a compra!");
+			}
+		});
+}
+
+function Reload() {
+	setTimeout(() => location.reload(), 500);
+}
+
+function LimparForm() {
+	$('#formulario').each(function () {
+		this.reset();
+	});
+	marcados = 0;
+	$("input.group").removeAttr("disabled");
+	$('input[type=checkbox]').prop('checked', false);
+}
+
+
+//get entrega
+// $(".entrega").change(function () {
+// 	var situacao = $(this).attr("rel");
+// 	var logado = $(this).attr("cpf");
+// 	var codProduto = $(this).attr("cod");
+// 	if (logado != "") {
+// 		if (situacao == "vazio") {
+// 			$(this).removeClass("coracaovazio");
+// 			$(this).addClass("coracaocheio");
+// 			$(this).attr("rel", "cheio");
+// 			$.ajax({
+// 				type: "POST",
+// 				url: '/Paginas/Index.aspx/Favoritou',
+// 				data: JSON.stringify({
+// 					'logado': logado,
+// 					'codProduto': codProduto
+// 				}),
+// 				contentType: 'application/json; charset=utf-8',
+// 				dataType: 'json',
+// 			})
+// 		} else {
+// 			$(this).removeClass("coracaocheio");
+// 			$(this).addClass("coracaovazio");
+// 			$(this).attr("rel", "vazio");
+// 			$.ajax({
+// 				type: "POST",
+// 				url: '/Paginas/Index.aspx/NaoFavoritou',
+// 				data: JSON.stringify({
+// 					'logado': logado,
+// 					'codProduto': codProduto
+// 				}),
+// 				contentType: 'application/json; charset=utf-8',
+// 				dataType: 'json',
+// 			})
+// 		}
+// 	} else {
+// 		alert("Para favoritar é necessário estar logado");
+// 	}
+// });

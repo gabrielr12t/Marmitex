@@ -8,7 +8,6 @@ namespace Marmitex.Domain.Entidades
     public class Cliente : Entity
     {
         public string Nome { get; set; }
-        public string Sobrenome { get; set; }
         public Sexo Sexo { get; set; }
         public string Cep { get; set; }
         public string Rua { get; set; }
@@ -20,16 +19,16 @@ namespace Marmitex.Domain.Entidades
         public DateTime DataCadastro { get; set; }
 
         public Cliente() { }
-        public Cliente(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        public Cliente(string nome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
         {
-            ValidationProperties(nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular);
-            SetProperties(nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
+            ValidationProperties(nome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular);
+            SetProperties(nome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
         }
-        public void Update(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        public void Update(string nome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
         {
-            SetProperties(nome, sobrenome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
+            SetProperties(nome, sexo, cep, rua, ruaNumero, bairro, numeroCasa, telefone, celular, dataCadastro);
         }
-        private void ValidationProperties(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular)
+        private void ValidationProperties(string nome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular)
         {
             ExceptionClass.Exec(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
             ExceptionClass.Exec(string.IsNullOrEmpty(sexo.ToString()), "Escolha uma opção de sexo");
@@ -42,13 +41,12 @@ namespace Marmitex.Domain.Entidades
             if (celular != null && celular.Length > 0) ExceptionClass.Exec(celular.Length != 15, "Celular inválido");
         }
 
-        private void SetProperties(string nome, string sobrenome, Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
+        private void SetProperties(string nome,  Sexo sexo, string cep, string rua, int ruaNumero, string bairro, string numeroCasa, string telefone, string celular, DateTime dataCadastro)
         {
             this.DataCadastro = dataCadastro;
             if (this.Id == 0) DataCadastro = DateTime.Now;
             // this.Id = id;
             this.Nome = nome.Trim();
-            this.Sobrenome = !string.IsNullOrEmpty(sobrenome) ? sobrenome.Trim() : null;
             this.Sexo = sexo;
             this.Cep = !string.IsNullOrEmpty(cep) ? cep : null;
             this.Rua = rua.Trim();

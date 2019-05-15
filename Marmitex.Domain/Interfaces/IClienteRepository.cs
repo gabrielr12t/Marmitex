@@ -7,6 +7,8 @@ namespace Marmitex.Domain.Interfaces
     public interface IClienteRepository : IRepositoryBase<Cliente>
     {
         Task<Cliente> GetClienteByTelefone(string telefone);
-        IQueryable<Pedido> ClientePedidos(int id);        
+        IQueryable<Pedido> ClientePedidos(int id);
+
+        
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
@@ -7,9 +8,10 @@ namespace Marmitex.Domain.Entidades
 {
     public class Acompanhamento : Cardapio
     {
+        public virtual ICollection<Marmita> Marmitas { get; set; }
         public Acompanhamento()
         {
-
+            this.Marmitas = new HashSet<Marmita>();
         }
         public Acompanhamento(string nome, DateTime data)
         {

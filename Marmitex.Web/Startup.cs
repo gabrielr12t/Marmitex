@@ -80,6 +80,14 @@ namespace Marmitex.Web
                 await next.Invoke();
 
                 var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
+                // var mistura = (IMisturaRepository)context.RequestServices.GetService(typeof(IMisturaRepository));
+                // var salada = (ISaladaRepository)context.RequestServices.GetService(typeof(ISaladaRepository));
+                // var acompanhamento = (IAcompanhamentoRepository)context.RequestServices.GetService(typeof(IAcompanhamentoRepository));
+
+                // mistura.RemoveRangeWithCondition(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString());
+                // salada.RemoveRangeWithCondition(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString());
+                // acompanhamento.RemoveRangeWithCondition(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString());
+
                 await unitOfWork.Commit();
             });
             // end save

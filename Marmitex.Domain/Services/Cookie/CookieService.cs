@@ -37,10 +37,7 @@ namespace Marmitex.Domain.Services.Cookie
 
         public void RemoveRange(List<string> names)
         {
-            foreach (var item in names)
-            {
-                _context.HttpContext.Response.Cookies.Delete(item);
-            }
+            foreach (var item in names) _context.HttpContext.Response.Cookies.Delete(item);
         }
         public void removeAll()
         {

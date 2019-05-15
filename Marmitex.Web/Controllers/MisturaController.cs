@@ -43,7 +43,6 @@ namespace Marmitex.Web.Controllers
 
             try
             {
-
                 await _misturaRepository.Add(_mapper.Map<Mistura>(misturaViewModel));
                 await _misturaRepository.Save();
                 var MisturaMapper = _mapper.Map<List<MisturaViewModel>>(await _misturaRepository.Ativos<Mistura>());//list de misturas para viewModel

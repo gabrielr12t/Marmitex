@@ -43,7 +43,7 @@ namespace Marmitex.Web.Controllers
         {
             try
             {
-                await _cardapioRepository.Add(_mapper.Map<Acompanhamento>(acompanhamentoViewModel));
+                await _cardapioRepository.AddCardapio(_mapper.Map<Acompanhamento>(acompanhamentoViewModel));
                 await _cardapioRepository.Save();
 
                 var AcompanhamentoMapper = _mapper.Map<List<AcompanhamentoViewModel>>(await _cardapioRepository.Ativos<Acompanhamento>());

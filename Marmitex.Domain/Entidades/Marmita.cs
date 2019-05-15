@@ -1,6 +1,7 @@
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,67 +10,50 @@ namespace Marmitex.Domain.Entidades
 {
     public class Marmita : Entity
     {
-        // public long SaladaId { get; set; }
+
         public virtual Salada Salada { get; set; }
-        public decimal Valor { get; private set; }
-        public Tamanho Tamanho { get; set; }
-        // public long MisturaId { get; set; }
+        public long SaladaId { get; set; }
+        public decimal Valor { get; set; }
+        public virtual Tamanho Tamanho { get; set; }
         public virtual Mistura Mistura { get; set; }
-
+        public long MisturaId { get; set; }
         public string Observacao { get; set; }
-        // teste
-        public virtual IEnumerable<Salada> Saladas { get; set; }
-        public virtual IEnumerable<Mistura> Misturas { get; set; }
-        public virtual IEnumerable<Acompanhamento> Acompanhamentos { get; set; }
-        // public virtual IEnumerable<Tamanho> Tamanhos { get; set; }
+        public virtual ICollection<Acompanhamento> Acompanhamentos { get; set; }         
 
-        public Marmita() { Acompanhamentos = new List<Acompanhamento>(2); }
-        public Marmita(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, List<Acompanhamento> acompanhamentos)
+
+        public Marmita() { this.Acompanhamentos = new HashSet<Acompanhamento>(); }
+
+        public Marmita(long misturaId, decimal valor, long saladaId, Tamanho tamanho, decimal acrescimo, string obs,
+        ICollection<Acompanhamento> acompanhamentos, Cliente cliente, Pedido pedido)
         {
-            Mistura = new Mistura();
-            Salada = new Salada();
-
-            Acompanhamentos = new List<Acompanhamento>(2);
-
-            ValidateProperties(mistura);
-            SetProperties(salada, mistura, valor, tamanho, acompanhamentos);
+            Acompanhamentos = new List<Acompanhamento>();
+            ValidateProperties(saladaId, misturaId, valor, tamanho, acrescimo, acompanhamentos, cliente);
+            SetProperties(saladaId, misturaId, valor, obs, tamanho, acrescimo, acompanhamentos, pedido);
         }
 
-
-        public Marmita(Mistura mistura, IQueryable<Acompanhamento> acompanhamentos, int saladaId, Tamanho tamanho, string obs, string entrega)
+        private void ValidateProperties(long saladaId, long misturaId, decimal valor, Tamanho tamanho, decimal acrescimo,
+         ICollection<Acompanhamento> acompanhamentos, Cliente cliente)
         {
-            Mistura = new Mistura
-            {
-                Id = mistura.Id,
-                AcrescimoValor = mistura.AcrescimoValor,
-                Nome = mistura.Nome
-            };
-            Salada = new Salada
-            {
-                Id = saladaId
-            };
-            Tamanho = tamanho;
-            Observacao = obs;
-            Acompanhamentos = acompanhamentos;
-            ValidateProperties(mistura);
-
+            ExceptionClass.Exec(misturaId < 0, "Mistura é obrigatória");
+            ExceptionClass.Exec(saladaId < 0, "Salada é obrigatória");
+            ExceptionClass.Exec(valor < 0, "Valor inválido");
+            ExceptionClass.Exec(acrescimo < 0, "Valor inválido");
+            ExceptionClass.Exec(acompanhamentos.Count() > 2, "Proibido mais de dois acompanhamentos em uma marmita");
+            ExceptionClass.Exec(tamanho.ToString().Equals(string.Empty), "Tamanho inválido");
+            ExceptionClass.Exec(cliente == null, "Cliente inválido");
         }
-
-        private void ValidateProperties(Mistura mistura)
+        private void SetProperties(long saladaId, long misturaId, decimal valor, string obs, Tamanho tamanho, decimal acrescimo,
+        ICollection<Acompanhamento> acompanhamentos, Pedido pedido)
         {
-            ExceptionClass.Exec(mistura == null, "Campo nome é obrigatório");
-        }
-        private void SetProperties(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, List<Acompanhamento> acompanhamentos)
-        {
-            // mini = 12 reais 
-            // normal = 14 reais
             this.Valor = tamanho == Tamanho.Mini ? 12 : 14;
-            if (mistura.AcrescimoValor > 0) this.Valor += mistura.AcrescimoValor;
-            this.Salada.Id = salada.Id;
-            this.Mistura.Id = mistura.Id;
+            if (acrescimo > 0) this.Valor += acrescimo;
+            this.SaladaId = saladaId;
+            this.Observacao = obs;
+            this.MisturaId = misturaId;
             this.Tamanho = tamanho;
-            this.Acompanhamentos = acompanhamentos;
-            // Acompanhamentos.ToList().AddRange(acompanhamentos);
+            //this.Pedido = pedido;
+            //this.Acompanhamentos = acompanhamentos;
+            //this.PedidoId = pedido.Id;
         }
     }
 }
