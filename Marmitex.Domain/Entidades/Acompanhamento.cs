@@ -8,10 +8,10 @@ namespace Marmitex.Domain.Entidades
 {
     public class Acompanhamento : Cardapio
     {
-        public virtual ICollection<Marmita> Marmitas { get; set; }
+
         public Acompanhamento()
         {
-            this.Marmitas = new HashSet<Marmita>();
+
         }
         public Acompanhamento(string nome, DateTime data)
         {

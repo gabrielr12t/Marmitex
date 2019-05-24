@@ -18,42 +18,45 @@ namespace Marmitex.Domain.Entidades
         public virtual Mistura Mistura { get; set; }
         public long MisturaId { get; set; }
         public string Observacao { get; set; }
-        public virtual ICollection<Acompanhamento> Acompanhamentos { get; set; }         
+        public virtual Pedido Pedido { get; set; }
+        public long PedidoId { get; set; }
+        public virtual ICollection<Acompanhamento> Acompanhamentos { get; set; }// remover esse atributo
+        public virtual ICollection<MarmitaAcompanhamento> MarmitaAcompanhamentos { get; set; }
 
 
         public Marmita() { this.Acompanhamentos = new HashSet<Acompanhamento>(); }
 
-        public Marmita(long misturaId, decimal valor, long saladaId, Tamanho tamanho, decimal acrescimo, string obs,
-        ICollection<Acompanhamento> acompanhamentos, Cliente cliente, Pedido pedido)
+
+        //
+        public Marmita(Mistura mistura, decimal valor, Salada salada, Tamanho tamanho, decimal acrescimo, string obs,
+            ICollection<Acompanhamento> acompanhamentos, Cliente cliente, Pedido pedido)
         {
             Acompanhamentos = new List<Acompanhamento>();
-            ValidateProperties(saladaId, misturaId, valor, tamanho, acrescimo, acompanhamentos, cliente);
-            SetProperties(saladaId, misturaId, valor, obs, tamanho, acrescimo, acompanhamentos, pedido);
+            ValidateProperties(salada, mistura, valor, tamanho, acrescimo, acompanhamentos, cliente);
+            SetProperties(salada, mistura, valor, obs, tamanho, acrescimo, acompanhamentos, pedido);
         }
 
-        private void ValidateProperties(long saladaId, long misturaId, decimal valor, Tamanho tamanho, decimal acrescimo,
+        private void ValidateProperties(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, decimal acrescimo,
          ICollection<Acompanhamento> acompanhamentos, Cliente cliente)
         {
-            ExceptionClass.Exec(misturaId < 0, "Mistura é obrigatória");
-            ExceptionClass.Exec(saladaId < 0, "Salada é obrigatória");
+            ExceptionClass.Exec(mistura == null, "Mistura é obrigatória");
+            ExceptionClass.Exec(salada == null, "Salada é obrigatória");
             ExceptionClass.Exec(valor < 0, "Valor inválido");
             ExceptionClass.Exec(acrescimo < 0, "Valor inválido");
             ExceptionClass.Exec(acompanhamentos.Count() > 2, "Proibido mais de dois acompanhamentos em uma marmita");
             ExceptionClass.Exec(tamanho.ToString().Equals(string.Empty), "Tamanho inválido");
             ExceptionClass.Exec(cliente == null, "Cliente inválido");
         }
-        private void SetProperties(long saladaId, long misturaId, decimal valor, string obs, Tamanho tamanho, decimal acrescimo,
+        private void SetProperties(Salada salada, Mistura mistura, decimal valor, string obs, Tamanho tamanho, decimal acrescimo,
         ICollection<Acompanhamento> acompanhamentos, Pedido pedido)
         {
             this.Valor = tamanho == Tamanho.Mini ? 12 : 14;
             if (acrescimo > 0) this.Valor += acrescimo;
-            this.SaladaId = saladaId;
+            this.SaladaId = salada.Id;
             this.Observacao = obs;
-            this.MisturaId = misturaId;
+            this.MisturaId = mistura.Id;
             this.Tamanho = tamanho;
-            //this.Pedido = pedido;
-            //this.Acompanhamentos = acompanhamentos;
-            //this.PedidoId = pedido.Id;
+            this.PedidoId = pedido.Id;
         }
     }
 }

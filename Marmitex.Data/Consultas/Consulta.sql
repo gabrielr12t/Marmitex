@@ -13,9 +13,11 @@
 --   DELETE from Marmitas where Id = 6
 --   DELETE from Marmitas where Id = 7
 --DELETE from Pedidos where Id = 9
+ 
+update Pedidos set [Data] = '2019-05-17 04:45:22.6554645' where Id = 2
 
--- drop DATABASE Marmitex
-
+SELECT * FROm Pedidos
+ 
 
 -- SELECT p.Id, p.[Data], p.OpcaoEntrega, p.OpcaoPagamento, p.Total,
 --     mis.Nome mistura, m.Observacao, m.SaladaId, m.Tamanho, m.Valor

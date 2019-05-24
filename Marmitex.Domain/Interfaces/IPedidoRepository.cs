@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Marmitex.Domain.Entidades;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +12,6 @@ namespace Marmitex.Domain.Interfaces
 {
     public interface IPedidoRepository : IRepositoryBase<Pedido>
     {
-        //IQueryable GetPedidoDia();
-        IQueryable<dynamic> GetPeidos();
+        Task<List<Pedido>> GetPedidos(Expression<Func<Pedido, bool>> predicate = null);
     }
 }

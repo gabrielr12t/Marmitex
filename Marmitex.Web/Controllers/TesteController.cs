@@ -4,7 +4,8 @@ namespace Marmitex.Web.Controllers
 {
     public class TesteController : Controller
     {
-        public IActionResult Teste()
+        [HttpGet]
+        public IActionResult TesteAPI()
         {
             return View();
         }

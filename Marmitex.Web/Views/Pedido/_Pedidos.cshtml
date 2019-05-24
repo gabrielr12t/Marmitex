@@ -1,0 +1,98 @@
+
+@model List<Marmitex.Web.ViewModels.PedidoViewModel>
+    @using Marmitex.Domain.Enums;
+    
+    @if(Model.Any())
+    {
+        @foreach(var item in Model)
+        {
+            var status = @item.Status;
+            var saida = string.Empty;
+            
+            if(status.Equals(Status.cancelado)) saida = "fa fa-close ";
+            if(status.Equals(Status.entregue)) saida = "fa fa-check ";
+            if(status.Equals(Status.rota)) saida = "fa fa-truck ";
+            
+            <button class="accordion">
+                <div class="row">
+                    <div class="col-lg-3">#@item.Id</div>
+                    <div class="col-lg-3">@item.Data</div>
+                    <div class="col-lg-3">@item.Cliente.Telefone</div>                    
+                    @if (status.Equals(Status.andamento))
+                    {
+                        <div class="col-lg-3"><div data-toggle="tooltip" title="Status em andamento!" class="loader"></div></div>
+                    }else
+                    {
+                        <div data-toggle="tooltip" title="Status em @status!" class="col-lg-3"><i class="@saida"></i></div>
+                    } 
+                </div>
+                <!-- #@item.Id - @item.Data - @item.Cliente.Telefone <label class="textoBotao">a</label> -->
+            </button>  
+            <div class="panel">
+                <br><b>Cliente: @item.Cliente.Nome</b>
+                <div class="row">        
+                    <div class="col-lg-6">
+                        <hr>           
+                        @foreach (var marmita in @item.Marmitas)
+                        {
+                            <b>código marmita: @marmita.Id</b><br>
+                            <p>Mistura: @marmita.Mistura.Nome</p>
+                            <p>Acréscimo: @marmita.Mistura.AcrescimoValor</p>                                   
+                            <p>Salada: @marmita.Salada.Nome</p>       
+                            <p>Tamanho: @marmita.Tamanho</p>       
+                            
+                            <p>Acompanhamentos: </p>                    
+                            @foreach (var acompanhamento in marmita.MarmitaAcompanhamentos)
+                            {                
+                                <p>&emsp;- @acompanhamento.Acompanhamento.Nome</p>
+                            }
+                            <p>Valor marmita: @marmita.Valor</p> 
+                            <hr>               
+                        }
+                        <h4><b>Total do pedido: </b></h4>
+                        @item.Marmitas.Count marmita(s)<br>
+                        R$ @item.Total 
+                    </div>
+                    <div class="col-lg-6">
+                        <b>Endereço de entrega: </b>
+                        <p><b>Cep</b> @item.Cliente.Cep</p>
+                        <p><b>Rua</b> @item.Cliente.Rua</p>
+                        <p><b>Número da Rua</b> @item.Cliente.RuaNumero</p>
+                        <p><b>Bairro</b> @item.Cliente.Bairro</p>
+                        <p><b>Bairro</b> @item.Cliente.NumeroCasa</p>
+                        <hr>
+                        <p>Forma de entrega: @item.OpcaoEntrega</p>
+                        <p>Forma de pagamento: @item.OpcaoPagamento</p>
+                        @if (@item.Status.Equals(Status.andamento))
+                        {
+                            <p style="color: red;">Cancelar pedido: <a href="#"><i style="color: red;" class="fa fa-trash"></i></a></p>
+                        }            
+                    </div>
+                </div>                
+            </div> 
+        }  
+    }else{
+        <div class="alert alert-warning alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Opa!</strong> Nenhum registro encontrado.
+        </div>
+    }  
+    
+     <script>
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+        //collapse
+
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+     </script>

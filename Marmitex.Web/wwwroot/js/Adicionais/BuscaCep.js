@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   function limpa_formulário_cep() {
     // Limpa valores do formulário de cep.
     $("#rua").val("");
@@ -8,7 +8,7 @@ $(document).ready(function() {
   }
 
   //Quando o campo cep perde o foco.
-  $("#cep").blur(function() {
+  $("#cep").blur(function () {
     //Nova variável "cep" somente com dígitos.
     var cep = $(this)
       .val()
@@ -30,7 +30,7 @@ $(document).ready(function() {
         //Consulta o webservice viacep.com.br/
         $.getJSON(
           "https://viacep.com.br/ws/" + cep + "/json/?callback=?",
-          function(dados) {
+          function (dados) {
             if (!("erro" in dados)) {
               //Atualiza os campos com os valores da consulta.
               $("#rua").val(dados.logradouro);

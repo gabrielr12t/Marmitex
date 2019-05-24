@@ -27,6 +27,7 @@ namespace Marmitex.Web.Controllers
         private readonly IClienteRepository _clienteRepository;
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
+
         public ClienteController(IEmailSender emailSender, IJsonService jsonService, ICookieService cookieService, IHostingEnvironment env, IClienteRepository clienteRepository, ISaladaRepository saladaRepository, IMisturaRepository misturaRepository,
         IAcompanhamentoRepository acompanhamentoRepository, IMapper mapper)
         {
@@ -108,13 +109,13 @@ namespace Marmitex.Web.Controllers
                 return View();
             }
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cadastro([FromQuery(Name = "ReturnURL")] string page, ClienteViewModel clienteViewModel)
         {
             try
-            {                
+            {
                 var cliente = _mapper.Map<Cliente>(clienteViewModel);//converter objeto clienteViewModel para cliente
                 await _clienteRepository.Add(cliente);//adicionando cliente
                 await _clienteRepository.Save();

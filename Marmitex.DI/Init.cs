@@ -22,7 +22,6 @@ namespace Marmitex.DI
 
             services.AddScoped(typeof(IAcompanhamentoRepository), typeof(AcompanhamentoRepository));
             services.AddScoped(typeof(IClienteRepository), typeof(ClienteRepository));
-            services.AddScoped(typeof(IItensPedidoRepository), typeof(ItensPedidoRepository));
             services.AddScoped(typeof(IMarmitaRepository), typeof(MarmitaRepository));
             services.AddScoped(typeof(IMisturaRepository), typeof(MisturaRepository));
             services.AddScoped(typeof(IPedidoRepository), typeof(PedidoRepository));

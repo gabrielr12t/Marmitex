@@ -15,7 +15,7 @@ namespace Marmitex.Web.ViewModels
         public string Numero { get; set; }
 
         public int SaladaId { get; set; }
-        // public virtual SaladaViewModel Salada { get; set; }
+        public virtual SaladaViewModel Salada { get; set; }
 
         public decimal Valor { get; private set; }
 
@@ -34,7 +34,8 @@ namespace Marmitex.Web.ViewModels
 
         // listas
 
-        public virtual IEnumerable<AcompanhamentoViewModel> Acompanhamentos { get; set; }
+        public virtual ICollection<MarmitaAcompanhamentoViewModel> MarmitaAcompanhamentos { get; set; }
+        public virtual ICollection<AcompanhamentoViewModel> Acompanhamentos { get; set; }
         public int[] AcompanhamentosInt { get; set; }
         public virtual IEnumerable<SaladaViewModel> Saladas { get; set; }
         public virtual IEnumerable<MisturaViewModel> Misturas { get; set; }

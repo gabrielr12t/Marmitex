@@ -1,4 +1,4 @@
-$(".excluirCliente").click(function() {
+$(".excluirCliente").click(function () {
   let id = $(this).attr("rel");
   swal({
     title: "Você tem certeza?",
@@ -23,7 +23,7 @@ function DeletarClienteById(id) {
     data: {
       Id: id
     },
-    success: function(dados) {
+    success: function (dados) {
       swal("Pronto, cliente " + dados.nome + " deletado!", {
         icon: "success"
       }).then(ok => {
@@ -34,7 +34,7 @@ function DeletarClienteById(id) {
         }
       });
     },
-    error: function(error) {
+    error: function (error) {
       swal("Opa!", "Esse cliente não existe!", "warning");
     }
     //error: swal("Opa!", "Esse cliente não existe!", "warning")

@@ -12,12 +12,10 @@ namespace Marmitex.Domain.Entidades
         public decimal Total { get; set; }
         public virtual Cliente Cliente { get; set; }
         public long ClienteId { get; set; }
-
         public OpcoesDeEntrega OpcaoEntrega { get; set; }
         public OpcoesDePagamento OpcaoPagamento { get; set; }
-
+        public Status Status { get; set; }
         public virtual ICollection<Marmita> Marmitas { get; set; }
-        public virtual ICollection<ItensPedido> ItensPedidos { get; set; }
 
 
         public Pedido() { }
@@ -28,7 +26,7 @@ namespace Marmitex.Domain.Entidades
             SetProperties(total, cliente, marmitas, opcEntrega, opcPagamento);
         }
 
-        private void ValidadeProperties(decimal total, Cliente cliente, ICollection<Marmita> marmitas, OpcoesDeEntrega opcEntrega, OpcoesDePagamento opcPagamento)
+        private void ValidadeProperties(decimal total, Cliente cliente, ICollection<Marmita> marmitas, OpcoesDeEntrega opcEntrega, OpcoesDePagamento opcPagamentos)
         {
             ExceptionClass.Exec(total < 0, "Total da compra inválido");
             ExceptionClass.Exec(cliente == null, "É necessário um cliente para efetuar a compra");
@@ -37,12 +35,13 @@ namespace Marmitex.Domain.Entidades
 
         private void SetProperties(decimal total, Cliente cliente, ICollection<Marmita> marmitas, OpcoesDeEntrega opcEntrega, OpcoesDePagamento opcPagamento)
         {
-            Marmitas = new List<Marmita>();
+            this.Marmitas = new List<Marmita>();
             this.Data = DateTime.Now;
             this.Total = total;
             this.ClienteId = cliente.Id;
             this.OpcaoEntrega = opcEntrega;
             this.OpcaoPagamento = opcPagamento;
+            this.Status = Status.andamento;             
         }
     }
 }

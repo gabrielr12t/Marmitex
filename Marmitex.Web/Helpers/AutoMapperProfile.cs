@@ -15,28 +15,24 @@ namespace Marmitex.Web.Helpers
             CreateMap<Mistura, MisturaViewModel>().ReverseMap();
 
             CreateMap<Acompanhamento, AcompanhamentoViewModel>().ReverseMap();
+            CreateMap<MarmitaAcompanhamento, MarmitaAcompanhamentoViewModel>().ReverseMap();
 
             CreateMap<MisturaViewModel, Mistura>().ReverseMap();
 
             CreateMap<SaladaViewModel, Salada>().ReverseMap();
 
-            CreateMap<Marmita, MarmitaAcompanhamento>()            
+            CreateMap<Marmita, MarmitaAcompanhamento>()
             .ForMember(ma => ma.Acompanhamento, conf => conf.MapFrom(m => m.Acompanhamentos))
             .ForMember(ma => ma.Marmita, conf => conf.MapFrom(m => m));
 
-            // CreateMap<MarmitaViewModel, Marmita>().ReverseMap();
+            CreateMap<Pedido, PedidoViewModel>().ReverseMap();//source -> destination
 
-            CreateMap<Marmita, MarmitaViewModel>()
-            .ForMember(vm => vm.MisturaId, conf => conf.MapFrom(m => m.Mistura.Id))
-            .ForMember(vm => vm.SaladaId, conf => conf.MapFrom(m => m.Salada.Id))
-            .ForMember(vm => vm.TamanhoId, conf => conf.MapFrom(m => m.Tamanho))
-            .ForMember(vm => vm.Marmitas, conf => conf.MapFrom(m => m));
+            CreateMap<Marmita, MarmitaViewModel>().ReverseMap();
+            // .ForMember(vm => vm.MisturaId, conf => conf.MapFrom(m => m.Mistura.Id))
+            // .ForMember(vm => vm.SaladaId, conf => conf.MapFrom(m => m.Salada.Id))
+            // .ForMember(vm => vm.TamanhoId, conf => conf.MapFrom(m => m.Tamanho))
+            // .ForMember(vm => vm.Marmitas, conf => conf.MapFrom(m => m));
 
-
-            // CreateMap<Marmita, MarmitaViewModel>()
-            // .ForMember(vm => vm.Acompanhamentos, conf => conf.MapFrom(marm => marm.Acompanhamentos))
-            // .ForMember(vm => vm.Saladas, conf => conf.MapFrom(marm => marm.Saladas))
-            // .ForMember(vm => vm.Misturas, conf => conf.MapFrom(marm => marm.Misturas));
         }
     }
 }
