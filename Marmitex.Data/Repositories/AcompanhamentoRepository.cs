@@ -17,12 +17,10 @@ namespace Marmitex.Data.Repositories
             var acompanhamento = obj.Id > 0 ? await _context.Acompanhamentos.FirstOrDefaultAsync(x => x.Id == obj.Id) : null;
             if (acompanhamento == null)
             {
-                //create
                 acompanhamento = new Acompanhamento(obj.Nome, obj.Data);
-                _context.Add(acompanhamento);
+                await base.Add(acompanhamento);
                 return;
             }
-            //update
             acompanhamento.Update(obj.Nome, acompanhamento.Data);
         }
     }

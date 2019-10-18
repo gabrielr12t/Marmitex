@@ -8,10 +8,10 @@ namespace Marmitex.Domain.Entidades
 {
     public class Pedido : Entity
     {
+        public long ClienteId { get; set; }
         public DateTime Data { get; set; }
         public decimal Total { get; set; }
         public virtual Cliente Cliente { get; set; }
-        public long ClienteId { get; set; }
         public OpcoesDeEntrega OpcaoEntrega { get; set; }
         public OpcoesDePagamento OpcaoPagamento { get; set; }
         public Status Status { get; set; }

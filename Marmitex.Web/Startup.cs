@@ -44,9 +44,6 @@ namespace Marmitex.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-         
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -77,26 +74,12 @@ namespace Marmitex.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
-            
-
-
-
             //save database
             app.Use(async (context, next) =>
             {
                 await next.Invoke();
 
                 var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
-                // var mistura = (IMisturaRepository)context.RequestServices.GetService(typeof(IMisturaRepository));
-                // var salada = (ISaladaRepository)context.RequestServices.GetService(typeof(ISaladaRepository));
-                // var acompanhamento = (IAcompanhamentoRepository)context.RequestServices.GetService(typeof(IAcompanhamentoRepository));
-
-                // mistura.RemoveRangeWithCondition(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString());
-                // salada.RemoveRangeWithCondition(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString());
-                // acompanhamento.RemoveRangeWithCondition(x => x.Data.ToShortDateString() != DateTime.Now.ToShortDateString());
-
-
             });
             // end save
 
@@ -107,7 +90,6 @@ namespace Marmitex.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

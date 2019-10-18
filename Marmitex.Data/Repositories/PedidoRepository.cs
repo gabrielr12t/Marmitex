@@ -7,8 +7,6 @@ using Marmitex.Data.Context;
 using Marmitex.Domain.Entidades;
 using Marmitex.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace Marmitex.Data.Repositories
 {

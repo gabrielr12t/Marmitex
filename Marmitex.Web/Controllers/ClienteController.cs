@@ -18,7 +18,6 @@ namespace Marmitex.Web.Controllers
 {
     public class ClienteController : Controller
     {
-
         private readonly IJsonService _jsonService;
         private readonly ICookieService _cookieService;
         private readonly ISaladaRepository _saladaRepository;
