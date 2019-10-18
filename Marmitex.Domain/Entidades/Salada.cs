@@ -2,28 +2,39 @@ using System;
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
+using Marmitex.Domain.Interfaces.ModelsInterfaces;
 
 namespace Marmitex.Domain.Entidades
 {
-    public class Salada : Cardapio
+    public class Salada : IModelBase<Salada>, ICardapioBase
     {
-        public Salada()
+        public Salada() { }
+        public Salada(Salada salada)
         {
+            Validation(salada);
+            SetProperties(salada);
+        }
 
-        }
-        public Salada(string nome, DateTime data)
+        public Guid Id { get; set; }
+        public string Nome { get; set; }
+        public DateTime Data { get; set; }
+        public StatusCardapio StatusCardapio { get; set; }
+
+        public void Update(Salada salada)
         {
-            SetPropertiesAndValidateNome(nome, data);
+            Validation(salada);
+            SetProperties(salada);
         }
-        public void Update(string nome, DateTime data)
+
+        public void Validation(Salada salada)
         {
-            SetPropertiesAndValidateNome(nome, data);
+            ExceptionClass.Exec(string.IsNullOrEmpty(salada.Nome), "Campo nome é obrigatório");
         }
-        private void SetPropertiesAndValidateNome(string nome, DateTime data)
+
+        public void SetProperties(Salada salada)
         {
-            ExceptionClass.Exec(string.IsNullOrEmpty(nome), "Campo nome é obrigatório");
-            this.Nome = nome.Trim();
-            this.Data = this.Id > 0 ? data : DateTime.Now;
+            this.Nome = salada.Nome.Trim();
+            this.Data = this.Id != Guid.Empty ? salada.Data : DateTime.Now;
             this.StatusCardapio = StatusCardapio.ATIVO;
         }
     }

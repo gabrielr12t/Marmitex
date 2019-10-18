@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
+using Marmitex.Domain.Interfaces.ModelsInterfaces;
 
 namespace Marmitex.Domain.Entidades
 {
-    public class Pedido : Entity
+    public class Pedido : IModelBase<Pedido>
     {
-        public long ClienteId { get; set; }
+        public Pedido() { }
+
+        public Pedido(Pedido pedido)
+        {
+            Validation(pedido);
+            SetProperties(pedido);
+        }
+
+        public Guid Id { get; set; }
         public DateTime Data { get; set; }
         public decimal Total { get; set; }
         public virtual Cliente Cliente { get; set; }
@@ -17,31 +26,22 @@ namespace Marmitex.Domain.Entidades
         public Status Status { get; set; }
         public virtual ICollection<Marmita> Marmitas { get; set; }
 
-
-        public Pedido() { }
-
-        public Pedido(decimal total, Cliente cliente, ICollection<Marmita> marmitas, OpcoesDeEntrega opcEntrega, OpcoesDePagamento opcPagamento)
+        public void Validation(Pedido pedido)
         {
-            ValidadeProperties(total, cliente, marmitas, opcEntrega, opcPagamento);
-            SetProperties(total, cliente, marmitas, opcEntrega, opcPagamento);
+            ExceptionClass.Exec(pedido.Total < 0, "Total da compra inválido");
+            ExceptionClass.Exec(pedido.Cliente == null, "É necessário um cliente para efetuar a compra");
+            ExceptionClass.Exec(pedido.Marmitas == null || pedido.Marmitas.Count == 0, "Para efetuar a compra precisa de pelo menos uma marmita adicionada");
         }
 
-        private void ValidadeProperties(decimal total, Cliente cliente, ICollection<Marmita> marmitas, OpcoesDeEntrega opcEntrega, OpcoesDePagamento opcPagamentos)
-        {
-            ExceptionClass.Exec(total < 0, "Total da compra inválido");
-            ExceptionClass.Exec(cliente == null, "É necessário um cliente para efetuar a compra");
-            ExceptionClass.Exec(marmitas == null, "Para efetuar a compra precisa de pelo menos uma marmita adicionada");
-        }
-
-        private void SetProperties(decimal total, Cliente cliente, ICollection<Marmita> marmitas, OpcoesDeEntrega opcEntrega, OpcoesDePagamento opcPagamento)
+        public void SetProperties(Pedido pedido)
         {
             this.Marmitas = new List<Marmita>();
             this.Data = DateTime.Now;
-            this.Total = total;
-            this.ClienteId = cliente.Id;
-            this.OpcaoEntrega = opcEntrega;
-            this.OpcaoPagamento = opcPagamento;
-            this.Status = Status.andamento;             
+            this.Total = pedido.Total;
+            this.Id = pedido.Cliente.Id;
+            this.OpcaoEntrega = pedido.OpcaoEntrega;
+            this.OpcaoPagamento = pedido.OpcaoPagamento;
+            this.Status = pedido.Status;
         }
     }
 }

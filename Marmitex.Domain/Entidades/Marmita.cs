@@ -1,6 +1,7 @@
 using Marmitex.Domain.BaseEntity;
 using Marmitex.Domain.DomainExceptions;
 using Marmitex.Domain.Enums;
+using Marmitex.Domain.Interfaces.ModelsInterfaces;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,9 @@ using System.Linq;
 
 namespace Marmitex.Domain.Entidades
 {
-    public class Marmita : Entity
+    public class Marmita : IModelBase<Marmita>
     {
-
+        public Guid Id { get; set; }
         public virtual Salada Salada { get; set; }
         public long SaladaId { get; set; }
         public decimal Valor { get; set; }
@@ -23,40 +24,37 @@ namespace Marmitex.Domain.Entidades
         public virtual ICollection<Acompanhamento> Acompanhamentos { get; set; }// remover esse atributo
         public virtual ICollection<MarmitaAcompanhamento> MarmitaAcompanhamentos { get; set; }
 
+        public Marmita()
+        {
+            this.Acompanhamentos = new HashSet<Acompanhamento>();
+        }
 
-        public Marmita() { this.Acompanhamentos = new HashSet<Acompanhamento>(); }
-
-
-        //
-        public Marmita(Mistura mistura, decimal valor, Salada salada, Tamanho tamanho, decimal acrescimo, string obs,
-            ICollection<Acompanhamento> acompanhamentos, Cliente cliente, Pedido pedido)
+        public Marmita(Marmita marmita)
         {
             Acompanhamentos = new List<Acompanhamento>();
-            ValidateProperties(salada, mistura, valor, tamanho, acrescimo, acompanhamentos, cliente);
-            SetProperties(salada, mistura, valor, obs, tamanho, acrescimo, acompanhamentos, pedido);
+            Validation(marmita);
+            SetProperties(marmita);
+        }
+        public void Validation(Marmita marmita)
+        {
+            ExceptionClass.Exec(marmita.Mistura == null, "Mistura é obrigatória");
+            ExceptionClass.Exec(marmita.Salada == null, "Salada é obrigatória");
+            ExceptionClass.Exec(marmita.Valor < 0, "Valor inválido");
+            ExceptionClass.Exec(marmita.Mistura.AcrescimoValor < 0, "Valor inválido");
+            ExceptionClass.Exec(marmita.Acompanhamentos.Count() > 2, "Proibido mais de dois acompanhamentos em uma marmita");
+            ExceptionClass.Exec(marmita.Tamanho.ToString().Equals(string.Empty), "Tamanho inválido");
+            ExceptionClass.Exec(marmita.Pedido.Cliente == null, "Cliente inválido");
         }
 
-        private void ValidateProperties(Salada salada, Mistura mistura, decimal valor, Tamanho tamanho, decimal acrescimo,
-         ICollection<Acompanhamento> acompanhamentos, Cliente cliente)
+        public void SetProperties(Marmita marmita)
         {
-            ExceptionClass.Exec(mistura == null, "Mistura é obrigatória");
-            ExceptionClass.Exec(salada == null, "Salada é obrigatória");
-            ExceptionClass.Exec(valor < 0, "Valor inválido");
-            ExceptionClass.Exec(acrescimo < 0, "Valor inválido");
-            ExceptionClass.Exec(acompanhamentos.Count() > 2, "Proibido mais de dois acompanhamentos em uma marmita");
-            ExceptionClass.Exec(tamanho.ToString().Equals(string.Empty), "Tamanho inválido");
-            ExceptionClass.Exec(cliente == null, "Cliente inválido");
-        }
-        private void SetProperties(Salada salada, Mistura mistura, decimal valor, string obs, Tamanho tamanho, decimal acrescimo,
-        ICollection<Acompanhamento> acompanhamentos, Pedido pedido)
-        {
-            this.Valor = tamanho == Tamanho.Mini ? 12 : 14;
-            if (acrescimo > 0) this.Valor += acrescimo;
-            this.SaladaId = salada.Id;
-            this.Observacao = obs;
-            this.MisturaId = mistura.Id;
-            this.Tamanho = tamanho;
-            this.PedidoId = pedido.Id;
+            this.Valor = marmita.Tamanho == Tamanho.Mini ? 12 : 14;
+            if (marmita.Mistura.AcrescimoValor > 0) this.Valor += marmita.Mistura.AcrescimoValor;
+            this.SaladaId = marmita.SaladaId;
+            this.Observacao = marmita.Observacao;
+            this.MisturaId = marmita.MisturaId;
+            this.Tamanho = marmita.Tamanho;
+            this.PedidoId = marmita.PedidoId;
         }
     }
 }
